@@ -74,6 +74,10 @@ TokenTree* StringToTokenTree(char* string)
             default:
                 // === Add character to current word
                 buffer[charCount++] = string[i];
+
+                if (i == len - 1)
+                    CopyBuffer(&currentNest, buffer, charCount);
+
                 break;
         }
     }
