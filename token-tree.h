@@ -2,16 +2,16 @@
 #define LINKED_TREE_H
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include "memproc.h"
 
 #define EMPTY_TOKEN "EMPTY"
 
 
-typedef enum Type {NONE, ATOM, SUBLIST} Type;
+typedef enum ContentType {NONE, ATOM, SUBLIST} ContentType;
 
 typedef struct TokenTree {
-    Type type;
+    ContentType type;
     union{
         char* token;
         struct TokenTree* subTree;
@@ -31,7 +31,7 @@ void RemoveTree(TokenTree* t);
 
 int IsEmpty(TokenTree* t);
 int HasNext(TokenTree* t);
-int HasSublist(TokenTree* t);
+int HasSubTree(TokenTree* t);
 int HasAtom(TokenTree* t);
 int HasParent(TokenTree* t);
 int HasNoToken(TokenTree* t);

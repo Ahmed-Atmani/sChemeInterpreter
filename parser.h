@@ -2,8 +2,8 @@
 #define PARSER_H
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include "memproc.h"
 #include "token-tree.h"
 
 #define BUFF_SIZE 100

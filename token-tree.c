@@ -3,23 +3,23 @@
 
 TokenTree* NewTokenTree(void)
 {
-    TokenTree* temp = (TokenTree*) malloc(sizeof(TokenTree));
+    TokenTree* temp = (TokenTree*) Allocate(sizeof(TokenTree), ALLOC_TOKEN_TREE);
     temp->type = NONE;
     temp->next = NULL;
     temp->prev = NULL;
     temp->parent = NULL;
     temp->value.subTree = NULL;
-    temp->value.token = malloc((5 + 1) * sizeof(char));
+    temp->value.token = Allocate((strlen(EMPTY_TOKEN) + 1) * sizeof(char), ALLOC_TOKEN_CONTENT);
     strcpy(temp->value.token, EMPTY_TOKEN);
     return temp;
 }
 
 void SetToken(TokenTree* t, char* val)
 {
-    free(t->value.token); // Free old token
+    Deallocate(t->value.token, sizeof(char) * (strlen(t->value.token) + 1), ALLOC_TOKEN_CONTENT); // Deallocate old token
 
     // Allocate and copy token
-    t->value.token = malloc((strlen(val) + 1) * sizeof(char));
+    t->value.token = Allocate((strlen(val) + 1) * sizeof(char), ALLOC_TOKEN_CONTENT);
     strcpy(t->value.token, val);
 
     // Update type
@@ -31,10 +31,10 @@ void SetTokenCounted(TokenTree* t, char* buffer, int charCount)
     if (!charCount)
         return;
 
-    free(t->value.token); // Free old token
+    Deallocate(t->value.token, sizeof(char) * (strlen(t->value.token) + 1), ALLOC_TOKEN_CONTENT); // Deallocate old token
 
     // Allocate and copy token
-    t->value.token = malloc((charCount + 1) * sizeof(char));
+    t->value.token = Allocate((charCount + 1) * sizeof(char), ALLOC_TOKEN_CONTENT);
     CopyCharacters(buffer, t->value.token, charCount);
 
     // Update type
@@ -70,14 +70,20 @@ void RemoveTree(TokenTree* t)
     if (IsEmpty(t))
         return;
     
+    // Update prev's next
     if (!IsEmpty(t->prev))
         t->prev->next = t->next; // Set previous' next to next
 
-    if (HasSublist(t))
-        RemoveTree(t->value.subTree); // Free subtrees recursively
+    // Deallocate next
+    if (HasNext(t))
+        RemoveTree(t->next);
 
-    free(t->value.token); // Free token
-    free(t); // Free tree itself
+    // Deallocate subtrees recursively
+    if (HasSubTree(t))
+        RemoveTree(t->value.subTree); // Deallocate subtrees recursively
+
+    Deallocate(t->value.token, sizeof(char) * (strlen(t->value.token) + 1), ALLOC_TOKEN_CONTENT); // Deallocate token
+    Deallocate(t, sizeof(TokenTree), ALLOC_TOKEN_TREE); // Deallocate tree itself
 }
 
 int IsEmpty(TokenTree* t)
@@ -90,14 +96,14 @@ int HasNext(TokenTree* t)
     return t->next != NULL;
 }
 
-int HasSublist(TokenTree* t)
+int HasSubTree(TokenTree* t)
 {
     return t->type == SUBLIST;
 }
 
 int HasAtom(TokenTree* t)
 {
-    return !HasSublist(t);
+    return !HasSubTree(t);
 }
 
 int HasParent(TokenTree* t)
@@ -147,7 +153,7 @@ void Foreach(TokenTree* t, void (*f)(char*))
     if (t == NULL)
         return;
     
-    if (HasSublist(t))
+    if (HasSubTree(t))
         Foreach(t->value.subTree, f);
     else
         f(t->value.token);

@@ -33,19 +33,28 @@ TokenTree* StringToTokenTree(char* string)
     char buffer[BUFF_SIZE] = "";      // Holds current word
     int charCount = 0;                // Stores how long the current word is
 
+    int insideQuote = 0;              // Stack for quote nesting 
+    int quoteStack = 0;               // Stack for quote nesting 
+
     for (int i = 0; i < len; i++){
         switch (string[i]){
 
             case '(':
                 // = Update stack
                 stack++; 
-                
+
+                // = Update quoted stack
+                if (insideQuote)
+                    quoteStack++;
+
+                // = Write word
                 CopyBuffer(&currentNest, buffer, charCount);
                 charCount = 0;
 
                 // = Increment nesting level
                 SetSubTree(currentNest, NewTokenTree());
                 currentNest = currentNest->value.subTree;
+
                 break;
 
             case ')':
@@ -54,6 +63,23 @@ TokenTree* StringToTokenTree(char* string)
                 if (stack < 0)
                     printf("\n======================\nError: Unexpected ')'!\n======================\n");
 
+                // = Update quoted stack
+                if (insideQuote){
+                    quoteStack--;
+                    if (!quoteStack){
+                        // = Remove quote nesting
+                        TokenTree* temp = currentNest;
+                        currentNest = currentNest->parent;
+
+                        // = Destroy old current if it's empty (no token)
+                        if (HasNoToken(temp))
+                            RemoveTree(temp);
+                    
+                        insideQuote = 0;
+                    }
+                }
+
+                // = Write word
                 CopyBuffer(&currentNest, buffer, charCount);
                 charCount = 0;
 
@@ -61,15 +87,40 @@ TokenTree* StringToTokenTree(char* string)
                 TokenTree* temp = currentNest;
                 currentNest = currentNest->parent;
                 
-                // Destroy old current if it's empty (no token)
+                // = Destroy old current if it's empty (no token)
                 if (HasNoToken(temp))
                     RemoveTree(temp);
                 break;
 
             case ' ':
+                // = Write word
                 CopyBuffer(&currentNest, buffer, charCount);
                 charCount = 0;
                 break;
+
+            case '\'':
+                // = Write word
+                CopyBuffer(&currentNest, buffer, charCount);
+
+                // = If not already in quote: make quote tree
+                if (!insideQuote && charCount == 0){
+                    // = Increment nesting level
+                    SetSubTree(currentNest, NewTokenTree());
+                    currentNest = currentNest->value.subTree;
+
+                    // = Add quote expression
+                    CopyBuffer(&currentNest, "quote", 5);
+
+                    if (i == len - 1)
+                        CopyBuffer(&currentNest, buffer, charCount);
+                    
+                    insideQuote = 1;
+                    quoteStack = 0;
+                    break;
+                }
+                // = Else: just write quote
+
+                // = Intentional switch fallthrough
 
             default:
                 // === Add character to current word
@@ -80,6 +131,10 @@ TokenTree* StringToTokenTree(char* string)
 
                 break;
         }
+
+        // printf("\nchar: '%c'\ninsideQuote: %i\nquoteStack: %i\ntree: ", string[i], insideQuote, quoteStack);
+        // PrintTree(tree);
+        // printf("\n");
     }
 
     if (stack > 0)
