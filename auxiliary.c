@@ -4,6 +4,7 @@
 String* NewString(int charCount)
 {
     String* str = Allocate(sizeof(String), ALLOC_STRING);
+    str->length = 0;
     NewStringContent(str, charCount);
     return str;
 }
@@ -11,6 +12,7 @@ String* NewString(int charCount)
 void NewStringContent(String* str, int charCount)
 {
     str->allocatedBytes = sizeof(char) * (charCount + 1);
+    str->length = charCount;
     str->content = Allocate(str->allocatedBytes, ALLOC_STRING_CONTENT);
 }
 
@@ -33,6 +35,11 @@ void RewriteString(String* str, const char* literal)
     CopyLiteralToString(str, literal);
 }
 
+int StringEq(String* str1, String* str2)
+{
+    return strcmp(str1->content, str2->content) == 0;
+}
+
 void PrintString(String* str)
 {
     printf("%s", str->content);
@@ -45,6 +52,7 @@ void FreeStringContent(String* str)
     
     Deallocate(str->content, str->allocatedBytes, ALLOC_STRING_CONTENT);
     str->allocatedBytes = 0;
+    str->length = 0;
     str->content = NULL;
 }
 

@@ -13,15 +13,27 @@ void* Allocate(size_t size, MemoryType type)
         bytesAllocated[ALLOC_TOTAL] += size;
         mallocCount[type]++;
     }
+    else{
+        printf("##################\n### MEMPROC ERROR: ALLOCATE: malloc returned NULL pointer while allocating %s type\n##################\n", memTypeName[type]);
+    }
     
     return temp;
 }
 
 void Deallocate(void* ptr, int size, MemoryType type)
 {
+    if (ptr == NULL){
+        printf("##################\n### MEMPROC ERROR: DEALLOCATE: Tried to free NULL pointer of type %s\n##################\n", memTypeName[type]);
+        return;
+    }
+
     bytesFreed[type] += size;
     bytesFreed[ALLOC_TOTAL] += size;
     freeCount[type]++;
+
+    if (bytesFreed[type] > bytesAllocated[type])
+        printf("##################\n### MEMPROC ERROR: DEALLOCATE: Pointer of type %s freed more than allocated (check Deallocation of NULL pointers)\n##################\n", memTypeName[type]);
+
     free(ptr);
 }
 
@@ -32,7 +44,10 @@ void PrintMemory()
     
     int totalCount;
     
-    for (int i = 0; i < MEM_TYPE_LENGTH; i++)
+    for (int i = 0; i < MEM_TYPE_LENGTH; i++){
         printf("%-15s%8d%8d%8d%8d%8d\n", memTypeName[i], mallocCount[i], freeCount[i], bytesAllocated[i], bytesFreed[i], bytesAllocated[i] - bytesFreed[i]);
+        if (i == MEM_TYPE_LENGTH - 2)
+            printf("-------------------------------------------------------\n");
+    }
     printf("\n");
 }

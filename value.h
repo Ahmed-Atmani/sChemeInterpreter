@@ -2,7 +2,8 @@
 #define VALUE_H
 
 #include <stdio.h>
-#include <string.h>
+// #include <string.h>
+#include "auxiliary.h"
 #include "memproc.h"
 
 
@@ -10,22 +11,21 @@
 // === Types of content
 
 // == S_Number
-typedef enum NumberType {INTEGER, EXACT, INEXACT} NumberType;
+typedef enum NumberType {EXACT, INEXACT} NumberType;
 typedef enum Sign {POSITIVE, NEGATIVE} Sign;
 
 // Fraction
-typedef struct Fraction{
+typedef struct S_Fraction{
     Sign sign;
     int numerator, denominator;
-} Fraction;
+} S_Fraction;
 
 // S_Number
 typedef struct S_Number{
     NumberType type;
     union{
-        int integer;
-        Fraction exact;
-        double inexact;
+        S_Fraction* exact; // Exact
+        double inexact; // Inexact
     } content;
 
 } S_Number;
@@ -65,23 +65,40 @@ typedef struct Value{
 
 // === Prototypes
 
-// == Constructors
-S_Number* MakeS_IntegerNumber(int value);
-Value* NewS_IntegerValue(int value);
-Value* NewS_BooleanValue(int t);
-// Value* NewVectorValue(int length, Value* content); // For make-vector
-Value* NewS_VectorValue(int length);
-Value* NewS_CharacterValue(char character);
-Value* NewS_StringValue(const char* S_String);
+Value* NewValue(ValueType type);
 
-// == Boolean 
+Value* MakeS_IntegerValue(int n);
+Value* MakeS_FractionValue(int num, int denom);
+Value* MakeS_InexactValue(double n);
+S_Number* NewS_InexactNumber(double n);
+S_Number* NewS_FractionNumber(int num, int denom);
+S_Number* NewS_IntegerNumber(int n);
+S_Fraction* NewS_Fraction(int num, int denom);
+int IsInteger(S_Number* num);
+void PrintS_Number(S_Number* num);
+void FreeS_Number(S_Number* num);
+void FreeFraction(S_Fraction* f);
+
+Value* MakeS_BooleanValue(int true);
+void PrintBoolean(S_Boolean bool);
+
+Value* MakeS_VectorValue(int length);
+S_Vector* NewS_Vector(int length);
+void PrintS_Vector(S_Vector* v);
+
+Value* MakeS_CharacterValue(char character);
+void PrintS_Character(char c);
+
+Value* MakeS_StringValue(String* string);
+S_String* NewS_String(int length);
+char* S_CharVectorToCharArray(S_Vector* v);
+void PrintS_String(S_String* s);
+
+void PrintVoid();
+
+void PrintValue(Value* val);
 int IsFalse(Value* val);
 int IsTrue(Value* val);
-
-// == S_String
-char* S_CharVectorToCharArray(S_Vector* v);
-
-// == General
-void PrintValue(Value* val);
+void FreeValue(Value* val);
 
 #endif

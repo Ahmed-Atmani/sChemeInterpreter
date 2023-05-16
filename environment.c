@@ -1,14 +1,13 @@
 #include "environment.h"
 
 
-EnvEntry* MakeEnvEntry(const char* identifier, Value* val)
+EnvEntry* MakeEnvEntry(String* identifier, Value* val)
 {
     EnvEntry* temp = Allocate(sizeof(EnvEntry), ALLOC_ENV_ENTRY);
     temp->next = NULL;
 
     // Copy identifier
-    temp->identifier = Allocate(sizeof(char) * (strlen(identifier) + 1), ALLOC_ENV_ENTRY);
-    strcpy(temp->identifier, identifier);
+    temp->identifier = identifier;
 
     // Point to value
     temp->value = val;
@@ -59,7 +58,7 @@ EnvHeader* AddEntryToNewEnvironment(EnvHeader* oldEnv, EnvEntry* entry)
     return newEnv;
 }
 
-Value* LookupValue(EnvHeader* env, const char* identifier)
+Value* LookupValue(EnvHeader* env, String* identifier)
 {
     EnvHeader* currentEnv = env;
     EnvEntry* currentEntry = (env == NULL) ? NULL : env->first; // Skip loop if env is NULL
@@ -74,7 +73,7 @@ Value* LookupValue(EnvHeader* env, const char* identifier)
         }
 
         // Compare identifiers
-        if (!strcmp(identifier, currentEntry->identifier))
+        if (StringEq(identifier, currentEntry->identifier))
             return currentEntry->value;
     }
     

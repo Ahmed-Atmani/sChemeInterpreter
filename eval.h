@@ -12,11 +12,11 @@
 #define IF "if"
 #define CONDITIONAL "cond"
 #define EXIT_KEYWORD "exit"
-#define SUM_KEYWOARD "+"
+#define SUM_KEYWORD "+"
 
 
 
-int IsKeyword(char* src, const char* keyWord);
+int IsKeyword(String* src, char* keyWord);
 Value* Eval(TokenTree* tree, EnvHeader* env);
 Value* EvalSequence(TokenTree* tree, EnvHeader* env);
 

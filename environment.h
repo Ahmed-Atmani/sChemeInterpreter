@@ -1,12 +1,13 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
-#include <string.h>
+// #include <string.h>
+#include "auxiliary.h"
 #include "value.h"
 
 
 typedef struct EnvEntry{
-    char* identifier;
+    String* identifier;
     Value* value;
     struct EnvEntry* next;
 } EnvEntry;
@@ -18,11 +19,11 @@ typedef struct EnvHeader{
 } EnvHeader;
 
 
-EnvEntry* MakeEnvEntry(const char* name, Value* val);
+EnvEntry* MakeEnvEntry(String* name, Value* val);
 EnvHeader* MakeEnvironment(EnvHeader* enclosing);
 EnvEntry* GetLastEnvEntry(EnvEntry* entry);
 void AddEntryToEnvironment(EnvHeader* env, EnvEntry* entry);
 EnvHeader* AddEntryToNewEnvironment(EnvHeader* oldEnv, EnvEntry* entry);
-Value* LookupValue(EnvHeader* env, const char* identifier);
+Value* LookupValue(EnvHeader* env, String* identifier);
 
 #endif

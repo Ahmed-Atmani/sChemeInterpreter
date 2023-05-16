@@ -12,7 +12,7 @@ int NothingToCopy(char* buffer, int charCount)
 void CopyBuffer(TokenTree** currentNest, char* buffer, int charCount)
 {
     // Create next if needed
-    if (!HasNoToken(*currentNest))
+    if (!HasNothing(*currentNest))
         *currentNest = AddNewNext(*currentNest);
     
     if (NothingToCopy(buffer, charCount))
@@ -72,7 +72,7 @@ TokenTree* StringToTokenTree(char* string)
                         currentNest = currentNest->parent;
 
                         // = Destroy old current if it's empty (no token)
-                        if (HasNoToken(temp))
+                        if (HasNothing(temp))
                             RemoveTree(temp);
                     
                         insideQuote = 0;
@@ -88,7 +88,7 @@ TokenTree* StringToTokenTree(char* string)
                 currentNest = currentNest->parent;
                 
                 // = Destroy old current if it's empty (no token)
-                if (HasNoToken(temp))
+                if (HasNothing(temp))
                     RemoveTree(temp);
                 break;
 
@@ -132,7 +132,7 @@ TokenTree* StringToTokenTree(char* string)
                 break;
         }
 
-        // printf("\nchar: '%c'\ninsideQuote: %i\nquoteStack: %i\ntree: ", string[i], insideQuote, quoteStack);
+        // printf("\nchar: '%c'\nbuffer: %s\ntree: ", string[i], buffer);
         // PrintTree(tree);
         // printf("\n");
     }

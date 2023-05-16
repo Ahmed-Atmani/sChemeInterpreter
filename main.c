@@ -47,32 +47,41 @@ int main(int argc, char** argv)
     return 0;
 }
 
+// char* my_gets(char* buffer)
+// {
+//     fgets(buffer, INPUT_SIZE, stdin);
+
+//     char* temp = buffer;
+//     while (*temp++ != '\n')
+// }
+
 void PromptLoop()
 {
-    char* string;
+    char string[INPUT_SIZE];
     TokenTree* tree;
+    Value* result;
 
+    // == Loop
     for (;;){
-        string = Allocate(sizeof(char) * INPUT_SIZE, ALLOC_OTHER);
-        // == Prompt
-        printf("> "); gets(string);
+        // == Read
+        printf("> "); 
+        scanf("%[^\n]%*c", string);
 
-        // printf("string: %s\n", string);
+        // // == Eval
         tree = StringToTokenTree(string);
+        result = Eval(tree, NULL);
+
+        // // == Print
+        printf("string: %s\ntree: ", string);
         PrintTree(tree);
-        printf("\n");
-        
-        Deallocate(string, sizeof(char) * INPUT_SIZE, ALLOC_OTHER);
-
-        Value* result = Eval(tree, NULL);
+        printf("\nresult: ");
         PrintValue(result);
-        // FreeValue()
         printf("\n");
         
-        // == Free tree
+        // // == Free memory
         RemoveTree(tree);
-
-        // PrintMemory();
-
+        FreeValue(result);
+        PrintMemory();
     }
 }
+ 
