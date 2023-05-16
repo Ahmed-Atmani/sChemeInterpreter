@@ -36,7 +36,12 @@ Value* Eval(TokenTree* tree, EnvHeader* env)
     if (IsNull(tree))
         return NULL;
 
-    String* token = NewStringFromLiteral(HasSubTree(tree) ? tree->value.subTree->value.token->content : tree->value.token->content);
+    String* token;
+    if (HasSubTree(tree))
+        token = NewStringFromLiteral(tree->value.subTree->value.token->content);
+    else if (HasToken(tree))
+        token = NewStringFromLiteral(tree->value.token->content);
+    
     Value* result;
 
     if (IsKeyword(token, CONDITIONAL))
