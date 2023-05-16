@@ -24,12 +24,14 @@ This is a project that does not contribute to anything in any way that I decided
 ## To do list
 
 ### Features to implement
-- Eval environment
+- Eval environment (with copy function that copies it)
 - Copy function for values (be careful which values to copy!)
+- Stack trace for error info (return Error Value object with stack trace)
 
 ### Changes to add
 - Put fraction sign to nominator, and make procedure that "balances" the sign to the nominator (to call before returning new value)
 - Make better makefile
+- #(x y z) = (vector x y z)
 
 ### Bugs to fix
 - Tokentree init type is NONE while it has a token
