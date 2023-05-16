@@ -2,17 +2,25 @@
 <br>
 A Scheme interpreter written in C that is planned to support the usage of pointers, classes and other C-like features (e.g. ++, += etc.). \
 This is a project that does not contribute to anything in any way that I decided to make for no reason whatsoever. 
+
 <br>
+
 ---
+
 <br>
+
 ## Main ideas
 - Pointers
 - Usage of C-like inline operations: var++,  *var, var += x, ...
 - Macro expansion
 - Classes
+
 <br>
+
 ---
+
 <br>
+
 ## To do list
 
 ### Features to implement
