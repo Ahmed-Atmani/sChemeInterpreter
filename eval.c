@@ -16,16 +16,17 @@ int IsKeyword(String* src, char* keyWord)
 
 Value* EvalSequence(TokenTree* tree, EnvHeader* env)
 {
-    // Evaluates trees with following structure:
-    // ((proc1 arg1 ...) val1 (proc2 arg1 ...) ...) 
-
     TokenTree* currentExpr = tree;
-    Value* lastValue = MakeS_IntegerValue(0);
+    Value* lastValue = NULL;
 
     while (currentExpr != NULL){
-        //free value
-        lastValue = Eval(tree, env);
-        currentExpr = tree->next;
+        // Free temporary value
+        if (lastValue != NULL)
+            FreeValue(lastValue);
+        
+        // Evaluate expression
+        lastValue = Eval(currentExpr, env);
+        currentExpr = currentExpr->next;
     }
 
     return lastValue;

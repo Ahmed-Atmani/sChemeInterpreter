@@ -23,7 +23,7 @@ void PromptLoop()
 
         // // == Eval
         tree = StringToTokenTree(string);
-        result = Eval(tree, NULL);
+        result = EvalSequence(tree, NULL);
 
         // // == Print
         printf("string: %s\ntree: ", string);
@@ -34,7 +34,7 @@ void PromptLoop()
         
         // // == Free memory
         RemoveTree(tree);
-        if (result != NULL)
+        if (result != NULL) // temporary (some functions temporarily return NULL as Value* object)
             FreeValue(result);
         PrintMemory();
     }
