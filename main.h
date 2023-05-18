@@ -7,7 +7,7 @@
 #include "eval.h"
 #include "value.h"
 #include "memproc.h"  
-#include "auxiliary.h"  
+#include "string.h"  
 
 #define INPUT_SIZE 500
 

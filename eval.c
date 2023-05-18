@@ -1,19 +1,6 @@
 #include "eval.h"
 
 
-int IsKeyword(String* src, char* keyWord)
-{
-    int len1 = src->length, len2 = strlen(keyWord);
-    if (len1 != len2)
-        return 0;
-    
-    for (int i = 0; i < len1; i++)
-        if (src->content[i] != keyWord[i])
-            return 0;
-    
-    return 1;
-}
-
 Value* EvalSequence(TokenTree* tree, EnvHeader* env)
 {
     TokenTree* currentExpr = tree;
@@ -36,32 +23,80 @@ Value* Eval(TokenTree* tree, EnvHeader* env)
 {
     if (IsNull(tree))
         return NULL;
-
-    String* token;
-    if (HasSubTree(tree))
-        token = NewStringFromLiteral(tree->value.subTree->value.token->content);
-    else if (HasToken(tree))
-        token = NewStringFromLiteral(tree->value.token->content);
     
-    Value* result;
+    Value* result = NULL;
 
-    if (IsKeyword(token, CONDITIONAL))
-        result = EvalConditional(env);
-    else if (IsKeyword(token, IF))
-        result = EvalIf(env);
-    else if (IsKeyword(token, DEFINITION))
-        result = EvalDefinition(env);
-    else if (IsKeyword(token, ASSIGNMENT))
-        result = EvalAssignment(env);
-    else if (IsKeyword(token, EXIT_KEYWORD))
-        EvalExit();
-    // Temp
-    else if (IsKeyword(token, SUM_KEYWORD))
-        result = EvalSum(tree, env);
+    if (IsIntegerLiteral(tree)){
+        printf("\n == NUMBER ==\n");
+        return MakeS_IntegerValue(atoi(tree->value.token->content));    
+    }
 
-    FreeString(token);
+    if (IsQuoted(tree)){
+        printf("\n == QUOTED ==\n");
+
+    }
+    // String* token;
+    // if (HasSubTree(tree))
+    //     token = NewStringFromLiteral(tree->value.subTree->value.token->content);
+    // else if (HasToken(tree))
+    //     token = NewStringFromLiteral(tree->value.token->content);
+
+    // if (IsKeyword(token, CONDITIONAL))
+    //     result = EvalConditional(env);
+    // else if (IsKeyword(token, IF))
+    //     result = EvalIf(env);
+    // else if (IsKeyword(token, DEFINITION))
+    //     result = EvalDefinition(env);
+    // else if (IsKeyword(token, ASSIGNMENT))
+    //     result = EvalAssignment(env);
+    // else if (IsKeyword(token, EXIT_KEYWORD))
+    //     EvalExit();
+    // // Temp
+    // else if (IsKeyword(token, SUM_KEYWORD))
+    //     result = EvalSum(tree, env);
+
+    // FreeString(token);
 
     return result;
+}
+
+int IsKeyword(String* src, char* keyWord)
+{
+    int len1 = src->length, len2 = strlen(keyWord);
+    if (len1 != len2)
+        return 0;
+    
+    for (int i = 0; i < len1; i++)
+        if (src->content[i] != keyWord[i])
+            return 0;
+    
+    return 1;
+}
+
+int IsIntegerLiteral(TokenTree* exp)
+{
+    if (!HasToken(exp))
+        return 0;
+    
+    String* token = exp->value.token;
+    int len = token->length;
+
+    if (len == 0)
+        return 0;
+
+    for (int i = 0; i < len; i++){
+        char c = token->content[i]; 
+        if (!(48 <= c && c <= 57))
+            return 0;
+    }
+    return 1;
+}
+
+int IsQuoted(TokenTree* exp)
+{
+    if (HasSubTree(exp) && HasToken(exp->value.subTree) && IsKeyword(exp->value.subTree->value.token, QUOTE))
+        return 1;
+    return 0;
 }
 
 Value* EvalSum(TokenTree* tree, EnvHeader* env){

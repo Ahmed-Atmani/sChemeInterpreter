@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 // #include <string.h>
-#include "auxiliary.h"
+#include "string.h"
 #include "memproc.h"
 
 #define EMPTY_TOKEN "EMPTY"

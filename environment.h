@@ -1,8 +1,7 @@
 #ifndef ENVIRONMENT_H
 #define ENVIRONMENT_H
 
-// #include <string.h>
-#include "auxiliary.h"
+#include "string.h"
 #include "value.h"
 
 

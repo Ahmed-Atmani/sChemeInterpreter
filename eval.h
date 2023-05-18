@@ -4,9 +4,10 @@
 #include "token-tree.h"
 #include "value.h"
 #include "environment.h"
-#include "auxiliary.h"
+#include "string.h"
 
 
+#define QUOTE "quote"
 #define DEFINITION "define"
 #define ASSIGNMENT "set!"
 #define IF "if"
@@ -15,10 +16,12 @@
 #define SUM_KEYWORD "+"
 
 
-
-int IsKeyword(String* src, char* keyWord);
 Value* Eval(TokenTree* tree, EnvHeader* env);
 Value* EvalSequence(TokenTree* tree, EnvHeader* env);
+
+int IsKeyword(String* src, char* keyWord);
+int IsIntegerLiteral(TokenTree* exp);
+int IsQuoted(TokenTree* exp);
 
 Value* EvalSum(TokenTree* tree, EnvHeader* env);
 Value* EvalConditional(EnvHeader* env);
