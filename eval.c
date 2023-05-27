@@ -100,6 +100,7 @@ Value* PerformSum(TokenTree* exp, EnvHeader* env) // Exp == list starting with '
         else
             accumulator += tmpVal->content.number->content.exact->numerator;
         
+        FreeValue(tmpVal);
         currArg = currArg->next;
     }
 
