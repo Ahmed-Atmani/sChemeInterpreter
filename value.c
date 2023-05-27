@@ -70,6 +70,11 @@ S_Fraction* NewS_Fraction(int num, int denom)
 }
 
 // = Predicates
+int IsS_Number(Value* val)
+{
+    return val->type == NUMBER;
+}
+
 int IsInteger(S_Number* num)
 {
     return (num->type == EXACT && num->content.exact->denominator == 1);

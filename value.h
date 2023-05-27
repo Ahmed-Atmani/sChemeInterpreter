@@ -74,6 +74,7 @@ S_Number* NewS_InexactNumber(double n);
 S_Number* NewS_FractionNumber(int num, int denom);
 S_Number* NewS_IntegerNumber(int n);
 S_Fraction* NewS_Fraction(int num, int denom);
+int IsS_Number(Value* val);
 int IsInteger(S_Number* num);
 void PrintS_Number(S_Number* num);
 void FreeS_Number(S_Number* num);

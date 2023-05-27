@@ -16,12 +16,17 @@
 #define SUM_KEYWORD "+"
 
 
-Value* Eval(TokenTree* tree, EnvHeader* env);
+Value* Eval(TokenTree* exp, EnvHeader* env);
 Value* EvalSequence(TokenTree* tree, EnvHeader* env);
 
 int IsKeyword(String* src, char* keyWord);
 int IsIntegerLiteral(TokenTree* exp);
 int IsQuoted(TokenTree* exp);
+
+int IsSum(TokenTree* exp);
+Value* PerformSum(TokenTree* operands, EnvHeader* env);
+
+int IsExit(TokenTree* exp);
 
 Value* EvalSum(TokenTree* tree, EnvHeader* env);
 Value* EvalConditional(EnvHeader* env);
