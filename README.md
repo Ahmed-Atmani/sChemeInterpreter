@@ -1,14 +1,9 @@
 # sCheme
 
-<br>
-
 sCheme is a Scheme interpreter written in C that is planned to support the usage of pointers, classes and other C-like features (e.g. ++, += etc.). \
 This is a project that does not contribute to anything in any way that I decided to make for no reason whatsoever. 
 
-<br>
-
 ---
-<br>
 
 ## Main ideas
 - Pointers
@@ -16,10 +11,7 @@ This is a project that does not contribute to anything in any way that I decided
 - Macro expansion
 - Classes
 
-<br>
-
 ---
-<br>
 
 ## To do list
 
@@ -29,6 +21,7 @@ This is a project that does not contribute to anything in any way that I decided
 - Apply
 - Copy function for values (be careful which values to copy!)
 - Stack trace for error info (return Error Value object with stack trace)
+    => Or just check on all procs if value is of type Error, then AppendTrace(errorValue, currentProcName)
 
 ### Changes to add
 - Add IsNull to HasAtom, ...
