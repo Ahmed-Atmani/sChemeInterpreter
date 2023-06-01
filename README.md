@@ -39,6 +39,7 @@ This is a project that does not contribute to anything in any way that I decided
 - Make better makefile
 - When value is <#void>, nothing is printed
 - Check parenthesis balance and empty input before parsing (or while parsing pass error to main to skip eval) 
+- Make new Read implementation (with getchar (while char != '\n')) 
 
 ### Bugs to fix
 - "()" and "'()" input gives segfault when freeing inputTree
