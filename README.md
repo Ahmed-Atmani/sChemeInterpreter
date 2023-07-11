@@ -26,6 +26,7 @@ This is a project that does not contribute to anything in any way that I decided
 1. Modify Parser to be able to parse characters (e.g. #\a becomes token instead of (vector \a))
  
 ### Features to implement
+- SubEnvironments should be a copy of the previous one (mutations should not affect the )
 - Eval should return a value and a new (modified) environment !!!!
 - Eval environment (with copy function that copies it)
 - Apply
