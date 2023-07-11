@@ -26,6 +26,9 @@ int IsQuoted(TokenTree* exp);
 int IsSum(TokenTree* exp);
 Value* PerformSum(TokenTree* operands, EnvHeader* env);
 
+int IsIdentifier(TokenTree* exp);   
+
+
 int IsExit(TokenTree* exp);
 
 Value* EvalSum(TokenTree* tree, EnvHeader* env);

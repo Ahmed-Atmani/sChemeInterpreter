@@ -5,6 +5,8 @@
 // #include <string.h>
 #include "string.h"
 #include "memproc.h"
+#include "token-tree.h"
+// #include "environment.h" // Circular inclue
 
 
 
@@ -41,12 +43,21 @@ typedef struct S_String{
     S_Vector* vector;
 } S_String;
 
+// S_Lambda
+struct EnvHeader;
+
+typedef struct S_Lambda{
+    int argCount;
+    TokenTree* body;
+    struct EnvHeader* environment;
+} S_Lambda;
+
 // Boolean
 typedef enum S_Boolean {FALSE, TRUE} S_Boolean;
 
 // === Value type
 
-typedef enum ValueType {EMPTY_LIST, ERROR, VOID, NUMBER, SYMBOL, STRING, CHARACTER, BOOLEAN, MCONS, VECTOR, POINTER, PROCEDURE} ValueType; 
+typedef enum ValueType {EMPTY_LIST, ERROR, VOID, NUMBER, SYMBOL, STRING, CHARACTER, BOOLEAN, MCONS, VECTOR, POINTER, LAMBDA} ValueType; 
 
 typedef struct Value{
     ValueType type;
@@ -57,6 +68,7 @@ typedef struct Value{
         S_Boolean boolean;
         S_Vector* vector;
         S_String* string;
+        S_Lambda* lambda;
 
     } content;
     // void* address;
@@ -94,6 +106,10 @@ Value* MakeS_StringValue(String* string);
 S_String* NewS_String(int length);
 char* S_CharVectorToCharArray(S_Vector* v);
 void PrintS_String(S_String* s);
+
+Value* MakeS_Lambda(TokenTree* body, struct EnvHeader* env, int argCount);
+S_Lambda* NewS_Lambda(TokenTree* body, struct EnvHeader* env, int argCount);
+void PrintS_Lambda(S_Lambda* l);
 
 void PrintVoid();
 

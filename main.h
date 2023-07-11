@@ -8,6 +8,7 @@
 #include "value.h"
 #include "memproc.h"  
 #include "string.h"  
+#include "environment.h"
 
 #define INPUT_SIZE 500
 

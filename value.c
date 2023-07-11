@@ -224,6 +224,32 @@ void PrintS_String(S_String* s)
     Deallocate(temp, sizeof(char) * (s->vector->length + 1), ALLOC_VALUE);
 }
 
+// === Lambda
+// = Constructor
+Value* MakeS_LambdaValue(TokenTree* body, struct EnvHeader* env, int argCount)
+{
+    Value* temp = Allocate(sizeof(Value), ALLOC_VALUE);
+    temp->type = LAMBDA;
+    temp->content.lambda = NewS_Lambda(body, env, argCount);
+    return temp;
+}
+
+// = Auxiliary constructor
+S_Lambda* NewS_Lambda(TokenTree* body, struct EnvHeader* env, int argCount)
+{
+    S_Lambda* temp = Allocate(sizeof(S_Lambda), ALLOC_VALUE);
+    temp->body = body;
+    temp->environment = env;
+    temp->argCount = argCount;
+    return temp;
+}
+
+// = Other functions
+void PrintS_Lambda(S_Lambda* l)
+{
+    printf("<lambda: %d args>", l->argCount);
+}
+
 // === Void
 void PrintVoid()
 {
@@ -258,6 +284,9 @@ void PrintValue(Value* val)
         
         case VOID:
             PrintVoid();
+            break;
+        case LAMBDA:
+            PrintS_Lambda(val->content.lambda);
             break;
         
         case -1:

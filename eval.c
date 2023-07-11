@@ -62,6 +62,19 @@ Value* Eval(TokenTree* exp, EnvHeader* env)
         result = NULL;
     }
 
+    else if (IsIdentifier(exp)){
+        printf("\n == IDENTIFIER ==\n");
+        EnvEntry* temp = LookupValue(env, exp->value.token);
+
+        result = (temp == NULL) ? NULL : temp->value;
+        
+        if (result == NULL){
+            printf("ERROR: Unbound identifier: ");
+            PrintString(exp->value.token);
+            printf("\n==========================\n");
+        }
+    }
+
     else if (IsSum(exp)){
         printf("\n == SUM ==\n");
         result = PerformSum(exp->value.subTree, env); // Give list of tokens starting from '+'
@@ -72,6 +85,11 @@ Value* Eval(TokenTree* exp, EnvHeader* env)
     }
 
     return result;
+}
+
+int IsIdentifier(TokenTree* exp)
+{
+    return HasToken(exp);
 }
 
 int IsSum(TokenTree* exp)

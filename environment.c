@@ -1,40 +1,16 @@
 #include "environment.h"
 
 
-// EnvEntry* MakeEnvEntry(String* identifier, Value* val)
-// {
-//     EnvEntry* temp = Allocate(sizeof(EnvEntry), ALLOC_ENV_ENTRY);
-//     temp->next = NULL;
-
-//     // Copy identifier
-//     temp->identifier = identifier;
-
-//     // Point to value
-//     temp->value = val;
-
-//     return temp;
-// }
-
-EnvEntry* MakeVariableEntry(String* identifier, Value* val)
+EnvEntry* MakeEnvEntry(String* identifier, Value* val)
 {
     EnvEntry* temp = Allocate(sizeof(EnvEntry), ALLOC_ENV_ENTRY);
-
     temp->next = NULL;
+
+    // Copy identifier
     temp->identifier = identifier;
-    temp->content.value = val;
-    temp->argumentCount = -1;
 
-    return temp;
-}
-
-EnvEntry* MakeProcedureEntry(String* identifier, TokenTree* body, int argCount)
-{
-    EnvEntry* temp = Allocate(sizeof(EnvEntry), ALLOC_ENV_ENTRY);
-
-    temp->next = NULL;
-    temp->identifier = identifier;
-    temp->content.body = body;
-    temp->argumentCount = argCount;
+    // Point to value
+    temp->value = val;
 
     return temp;
 }
@@ -90,27 +66,11 @@ EnvHeader* AddEntryToNewEnvironment(EnvHeader* oldEnv, EnvEntry* entry)
     return newEnv;
 }
 
-int IsVariable(EnvEntry* entry)
-{
-    return entry->argumentCount == -1;
-}
-
-int IsProcedure(EnvEntry* entry)
-{
-    return !IsVariable(entry);
-}
-
 void PrintEnvEntry(EnvEntry* entry)
 {
     PrintString(entry->identifier);
     printf("\t");
-
-    if (IsVariable(entry))
-        PrintValue(entry->content.value);
-    
-    else
-        printf("<proc>");
-    
+    PrintValue(entry->value);    
 }
 
 EnvEntry* LookupValue(EnvHeader* env, String* identifier)
