@@ -66,7 +66,7 @@ Value* Eval(TokenTree* exp, EnvHeader* env)
         printf("\n == IDENTIFIER ==\n");
         EnvEntry* temp = LookupValue(env, exp->value.token);
 
-        result = (temp == NULL) ? NULL : temp->value;
+        result = (temp == NULL) ? NULL : CopyValue(temp->value);
         
         if (result == NULL){
             printf("ERROR: Unbound identifier: ");

@@ -97,6 +97,16 @@ void PrintS_Number(S_Number* num)
     }
 }
 
+Value* CopyS_Number(S_Number* num)
+{    
+    switch (num->type){
+        case EXACT:
+            return MakeS_FractionValue(num->content.exact->numerator, num->content.exact->denominator);
+        case INEXACT:
+            return MakeS_InexactValue(num->content.inexact);
+    }
+}
+
 void FreeS_Number(S_Number* num)
 {
     if (num->type == EXACT)
@@ -304,6 +314,43 @@ int IsTrue(Value* val)
     return !IsFalse(val);
 }
 
+Value* CopyValue(Value* val)
+{
+    ValueType type = (val == NULL) ? -1 : val->type;
+
+    switch (type){
+        case NUMBER:
+            return CopyS_Number(val->content.number);
+            break;
+        
+        case CHARACTER:
+            // return CopyS_Character(val->content.character);
+            break;
+
+        case BOOLEAN:
+            // return CopyS_Boolean(val->content.boolean);
+            break;
+
+        case VECTOR:
+            // return CopyS_Vector(val->content.vector);
+            break;
+
+        case STRING:
+            // return CopyS_String(val->content.string);
+            break;
+        
+        case VOID:
+            // return CopyVoid();
+            break;
+        case LAMBDA:
+            // return CopyS_Lambda(val->content.lambda);
+            break;
+        
+        case -1:
+            printf("value.c:PrintValue: Given value is NULL\n");
+    }
+}
+
 void FreeValue(Value* val)
 {
     ValueType type = (val == NULL) ? -1 : val->type;
@@ -323,6 +370,7 @@ void FreeValue(Value* val)
                 
         case CHARACTER:
         case BOOLEAN:
+        case LAMBDA:
         case VOID:
         case -1:
             printf("value.c:FreeValue: given value is NULL\n");

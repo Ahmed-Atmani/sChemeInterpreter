@@ -13,7 +13,21 @@ This is a project that does not contribute to anything in any way that I decided
 
 ---
 
-## To do list
+## To do now
+1. Make CopyValue function that is called when returning value from eval
+    => in case of variable: copy
+    => in case of function return value: do not copy 
+1. Make Apply procedure that will:
+    1. Make a new environment
+    1. Make new variables (arguments) 
+    1. Call EvalSequence on the body
+1. Make primitive procedures
+    1. Make S_Primitive Value type (that encapsulates function pointer) (?) 
+    1. Add primitives to base EnvHeader
+        => Primitives can be mutated just like regular variables
+    1. Load put all primitives into env on startup
+
+## To do later
 1. Add Error type
 1. Make Error type handling
 
@@ -24,7 +38,8 @@ This is a project that does not contribute to anything in any way that I decided
 1. Modify Eval to return Value-Environment pair
  
 1. Modify Parser to be able to parse characters (e.g. #\a becomes token instead of (vector \a))
- 
+
+## Features and fixes
 ### Features to implement
 - SubEnvironments should be a copy of the previous one (mutations should not affect the )
 - Eval should return a value and a new (modified) environment !!!!

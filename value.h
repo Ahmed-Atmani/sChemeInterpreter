@@ -90,6 +90,7 @@ int IsS_Number(Value* val);
 int IsInteger(S_Number* num);
 void PrintS_Number(S_Number* num);
 void FreeS_Number(S_Number* num);
+Value* CopyS_Number(S_Number* num);
 void FreeFraction(S_Fraction* f);
 
 Value* MakeS_BooleanValue(int true);
@@ -116,6 +117,7 @@ void PrintVoid();
 void PrintValue(Value* val);
 int IsFalse(Value* val);
 int IsTrue(Value* val);
+Value* CopyValue(Value* val);
 void FreeValue(Value* val);
 
 #endif
