@@ -16,6 +16,7 @@
 #define SUM_KEYWORD "+"
 
 #define PRINT_ENV "print-env"
+#define PRINT_MEM "print-mem"
 
 
 Value* Eval(TokenTree* exp, EnvHeader* env);
@@ -29,6 +30,7 @@ int IsSum(TokenTree* exp);
 Value* PerformSum(TokenTree* operands, EnvHeader* env);
 
 int IsPrintEnv(TokenTree* exp);
+int IsPrintMem(TokenTree* exp);
 int IsIdentifier(TokenTree* exp);   
 
 int IsDefine(TokenTree* exp);

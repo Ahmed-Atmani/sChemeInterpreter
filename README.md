@@ -14,16 +14,17 @@ This is a project that does not contribute to anything in any way that I decided
 ---
 
 ## To do now
-1. Make it possible to define:
-    1. Variable
-    1. Procedures
-    => Environment should be given to:
-        1. Eval (for scope of whatever called eval)
-        1. SubProcedures in Eval that change the environment (e.g. EvalDefinition)
+1. Return singleton/new void type after definition/printmem/...
+1. Make it possible to define procedures:
+    1. Make CheckArgCount function that is called on each macro/proc application
+    1. Make Lambda type with constructor
+    1. Manually add lambda to env to test
+    1. Complete EvalDefinition
 1. Make Apply procedure that will:
     1. Make a new environment
     1. Make new variables (arguments) 
     1. Call EvalSequence on the body
+1. Make 3-demensional array with predicate-argcount-function for macros/proc application
 1. Make primitive procedures
     1. Make S_Primitive Value type (that encapsulates function pointer) (?) 
     1. Add primitives to base EnvHeader

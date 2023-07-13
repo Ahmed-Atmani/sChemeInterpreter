@@ -45,7 +45,6 @@ void PromptLoop()
         RemoveTree(tree);
         if (result != NULL) // temporary (some functions temporarily return NULL as Value* object)
             FreeValue(result);
-        // PrintMemory();
     }
 }
  
