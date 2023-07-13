@@ -61,6 +61,16 @@ Value* Eval(TokenTree* exp, EnvHeader* env)
         printf("\n == QUOTED ==\n");
         result = NULL;
     }
+    else if (IsDefine(exp)){
+        printf("\n == DEFINE ==\n");
+        result = EvalDefinition(exp->value.subTree, env);
+    }
+
+    else if (IsPrintEnv(exp)){
+        PrintEnvironment(env);
+        printf("\n");
+        result = NULL;
+    }
 
     else if (IsIdentifier(exp)){
         printf("\n == IDENTIFIER ==\n");
@@ -85,6 +95,69 @@ Value* Eval(TokenTree* exp, EnvHeader* env)
     }
 
     return result;
+}
+
+int IsPrintEnv(TokenTree* exp)
+{
+    return HasSubTree(exp) &&
+          !IsNull(exp->value.subTree) &&
+           HasToken(exp->value.subTree) &&
+           IsKeyword(exp->value.subTree->value.token, PRINT_ENV);
+}
+
+int IsDefine(TokenTree* exp)
+{
+    return HasSubTree(exp) &&
+          !IsNull(exp->value.subTree) &&
+           HasToken(exp->value.subTree) &&
+           IsKeyword(exp->value.subTree->value.token, DEFINITION);
+}
+
+Value* EvalDefinition(TokenTree* exp, EnvHeader* env)
+{
+    printf("exp: ");
+    PrintTree(exp);
+    printf("\nexp->next: ");
+    PrintTree(exp->next);
+    printf("\nexp->next->next: ");
+    PrintTree(exp->next->next);
+
+
+    if (!HasNext(exp))
+        return NULL;
+
+    switch (HasSubTree(exp->next)){
+        case 0: // Variable definition
+            String* identifier = NewStringFromLiteral(exp->next->value.token->content);
+            
+            printf("\nidentifier: ");
+            PrintString(identifier);
+
+            if (!HasNext(exp->next)){
+                printf("ERROR: EvalDefinition: Two args given!\n");
+                return NULL;
+            }
+
+            Value* val = Eval(exp->next->next, env);
+
+            printf("\nvalue: ");
+            PrintValue(val);
+            printf("\n");
+
+
+            PrintEnvironment(env);
+            AddEntryToEnvironment(env, MakeEnvEntry(identifier, val));
+            PrintEnvironment(env);
+
+
+            break;
+        
+        default: // Procedure definition
+
+            break;
+    }
+
+    return NULL;
 }
 
 int IsIdentifier(TokenTree* exp)
@@ -184,12 +257,6 @@ Value* EvalConditional(EnvHeader* env){
 Value* EvalIf(EnvHeader* env){
     printf("If!\n");
     return NULL;
-}
-
-Value* EvalDefinition(EnvHeader* env){
-    printf("Define!\n");
-    return MakeS_FractionValue(-2, 3);
-    // return NULL;
 }
 
 Value* EvalAssignment(EnvHeader* env){

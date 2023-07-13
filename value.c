@@ -300,7 +300,7 @@ void PrintValue(Value* val)
             break;
         
         case -1:
-            printf("value.c:PrintValue: Given value is NULL\n");
+            printf("ERROR: value.c:PrintValue: Given value is NULL\n");
     }
 }
 

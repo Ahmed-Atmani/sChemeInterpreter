@@ -14,9 +14,12 @@ This is a project that does not contribute to anything in any way that I decided
 ---
 
 ## To do now
-1. Make CopyValue function that is called when returning value from eval
-    => in case of variable: copy
-    => in case of function return value: do not copy 
+1. Make it possible to define:
+    1. Variable
+    1. Procedures
+    => Environment should be given to:
+        1. Eval (for scope of whatever called eval)
+        1. SubProcedures in Eval that change the environment (e.g. EvalDefinition)
 1. Make Apply procedure that will:
     1. Make a new environment
     1. Make new variables (arguments) 
@@ -28,16 +31,13 @@ This is a project that does not contribute to anything in any way that I decided
     1. Load put all primitives into env on startup
 
 ## To do later
-1. Add Error type
-1. Make Error type handling
+- Add Error type with Error type handling
+- Make procedures to copy Environment in various ways (e.g. copy-while-adding-entry)
 
-1. Make procedure/variable type for Environment (two subtypes of EnvEntry)
-1. Make procedures to copy Environment in various ways (e.g. copy-while-adding-entry)
+- Make ValEnv type (Value-Environment-pair) for return type of Eval
+- Modify Eval to return Value-Environment pair
 
-1. Make ValEnv type (Value-Environment-pair) for return type of Eval
-1. Modify Eval to return Value-Environment pair
- 
-1. Modify Parser to be able to parse characters (e.g. #\a becomes token instead of (vector \a))
+- Modify Parser to be able to parse characters (e.g. #\a becomes token instead of (vector \a))
 
 ## Features and fixes
 ### Features to implement
