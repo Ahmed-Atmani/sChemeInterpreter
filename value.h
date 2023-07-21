@@ -43,6 +43,11 @@ typedef struct S_String{
     S_Vector* vector;
 } S_String;
 
+// S_Symbol
+typedef struct S_Symbol{
+    String* str;
+} S_Symbol;
+
 // S_Lambda
 struct EnvHeader;
 
@@ -68,6 +73,7 @@ typedef struct Value{
         S_Boolean boolean;
         S_Vector* vector;
         S_String* string;
+        S_Symbol* symbol;   
         S_Lambda* lambda;
 
     } content;
@@ -90,7 +96,7 @@ int IsS_Number(Value* val);
 int IsInteger(S_Number* num);
 void PrintS_Number(S_Number* num);
 void FreeS_Number(S_Number* num);
-Value* CopyS_Number(S_Number* num);
+Value* CopyS_NumberValue(S_Number* num);
 void FreeFraction(S_Fraction* f);
 
 Value* MakeS_BooleanValue(int true);
@@ -108,10 +114,17 @@ S_String* NewS_String(int length);
 char* S_CharVectorToCharArray(S_Vector* v);
 void PrintS_String(S_String* s);
 
+Value* MakeS_SymbolValue(char* str);
+S_Symbol* NewS_Symbol(char* str);
+void PrintS_Symbol(S_Symbol* sym);
+void FreeS_Symbol(S_Symbol* sym);
+Value* CopyS_SymbolValue(S_Symbol* sym);    
+
 Value* MakeS_Lambda(TokenTree* body, struct EnvHeader* env, int argCount);
 S_Lambda* NewS_Lambda(TokenTree* body, struct EnvHeader* env, int argCount);
 void PrintS_Lambda(S_Lambda* l);
 
+Value* MakeS_Void();
 void PrintVoid();
 
 void PrintValue(Value* val);

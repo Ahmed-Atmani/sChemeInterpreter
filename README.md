@@ -15,6 +15,9 @@ This is a project that does not contribute to anything in any way that I decided
 
 ## To do now
 1. Return singleton/new void type after definition/printmem/...
+1. Make symbol type
+1. Define should overwrite definition of existing identifier
+&nbsp;&nbsp;&nbsp;&nbsp;$\implies$ Only overwrite if identifier in same scope (not in enclosing scopes)
 1. Make it possible to define procedures:
     1. Make CheckArgCount function that is called on each macro/proc application
     1. Make Lambda type with constructor
@@ -59,6 +62,7 @@ This is a project that does not contribute to anything in any way that I decided
 - Make new Read implementation (with getchar (while char != '\n')) 
 
 ### Bugs to fix
+- Segfault after deleting characters (overwriting) on input
 - "()" and "'()" input gives segfault when freeing inputTree
     => "()" has parse tree "( ( ) )"
     => "'()" has parse tree "( ( [quote] ( *nothing* ) ) )"

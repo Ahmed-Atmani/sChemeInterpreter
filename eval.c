@@ -1,30 +1,30 @@
 #include "eval.h"
 
 
-void PrintCurrentNode(TokenTree* t)
-{
-    if (IsNull(t))
-        printf("Tree is null");
-    else if (HasToken(t)){
-        printf("HasToken: ");
-        PrintString(t->value.token);
-    }
-    else if (HasSubTree(t)){
-        printf("HasSubTree: ( ");
-        TokenTree* curr = t->value.subTree;
-        while (curr != NULL){
-            if (HasToken(t)){
-                PrintString(curr->value.token);
-                printf(" ");
-            }
-            else if (HasSubTree(t))
-                printf("*subsubtree* ");
-        curr = curr->next; 
-        }
-        printf(" )");
-    }
-    printf("\n");
-}
+// void PrintCurrentNode(TokenTree* t)
+// {
+//     if (IsNull(t))
+//         printf("Tree is null");
+//     else if (HasToken(t)){
+//         printf("HasToken: ");
+//         PrintString(t->value.token);
+//     }
+//     else if (HasSubTree(t)){
+//         printf("HasSubTree: ( ");
+//         TokenTree* curr = t->value.subTree;
+//         while (curr != NULL){
+//             if (HasToken(t)){
+//                 PrintString(curr->value.token);
+//                 printf(" ");
+//             }
+//             else if (HasSubTree(t))
+//                 printf("*subsubtree* ");
+//         curr = curr->next; 
+//         }
+//         printf(" )");
+//     }
+//     printf("\n");
+// }
 
 Value* EvalSequence(TokenTree* tree, EnvHeader* env)
 {
@@ -42,7 +42,6 @@ Value* EvalSequence(TokenTree* tree, EnvHeader* env)
     }
 
     return lastValue;
-
 }
 
 Value* Eval(TokenTree* exp, EnvHeader* env)
@@ -50,33 +49,48 @@ Value* Eval(TokenTree* exp, EnvHeader* env)
     if (IsNull(exp))
         return NULL;
     
-    Value* result = NULL;
+    Value* result;
 
+    // = Number
     if (IsIntegerLiteral(exp)){
         printf("\n == NUMBER ==\n");
-        result = MakeS_IntegerValue(atoi(exp->value.token->content));    
+        return MakeS_IntegerValue(atoi(exp->value.token->content));    
     }
 
-    else if (IsQuoted(exp)){
+    // = Symbol
+    if (IsQuoted(exp)){
         printf("\n == QUOTED ==\n");
-        result = NULL;
-    }
-    else if (IsDefine(exp)){
-        printf("\n == DEFINE ==\n");
-        result = EvalDefinition(exp->value.subTree, env);
+        return GetSymbol(exp->value.subTree); // Should return symbol value
     }
 
-    else if (IsPrintEnv(exp)){
+    // = Definition
+    if (IsDefine(exp)){
+        printf("\n == DEFINE ==\n");
+        EvalDefinition(exp->value.subTree, env);
+        return MakeS_Void();
+    }
+
+    // = DEBUG: Print Environment
+    if (IsPrintEnv(exp)){
         PrintEnvironment(env);
         printf("\n");
-        result = NULL;
-    }
-    else if (IsPrintMem(exp)){
-        PrintMemory(env);
-        result = NULL;
+        return MakeS_Void();
     }
 
-    else if (IsIdentifier(exp)){
+    // = DEBUG: Print Memory allocation
+    if (IsPrintMem(exp)){
+        PrintMemory(env);
+        return MakeS_Void();;
+    }
+
+    // = TEMP: Sum
+    if (IsSum(exp)){
+        printf("\n == SUM ==\n");
+        return PerformSum(exp->value.subTree, env); // Give list of tokens starting from '+'
+    }
+
+    // = Variable
+    if (IsIdentifier(exp)){
         printf("\n == IDENTIFIER ==\n");
         EnvEntry* temp = LookupValue(env, exp->value.token);
 
@@ -87,18 +101,22 @@ Value* Eval(TokenTree* exp, EnvHeader* env)
             PrintString(exp->value.token);
             printf("\n==========================\n");
         }
+
+        return result;
     }
 
-    else if (IsSum(exp)){
-        printf("\n == SUM ==\n");
-        result = PerformSum(exp->value.subTree, env); // Give list of tokens starting from '+'
-    }
-    else if (IsExit(exp)){
+    // = Exit
+    if (IsExit(exp)){
         printf("\n == EXIT ==\n");
         EvalExit();
     }
 
-    return result;
+    return NULL; // Should return error: unknown expression
+}
+
+Value* GetSymbol(TokenTree* exp)
+{
+    return MakeS_SymbolValue(exp->next->value.token->content);
 }
 
 int IsPrintEnv(TokenTree* exp)
@@ -145,7 +163,6 @@ Value* EvalDefinition(TokenTree* exp, EnvHeader* env)
             break;
         
         default: // Procedure definition
-
             break;
     }
 

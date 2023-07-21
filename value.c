@@ -9,7 +9,7 @@ CONVENTION:
 
 Value* NewValue(ValueType type)
 {
-    Value* temp = Allocate(sizeof(Value), ALLOC_VALUE);
+    Value* temp = Allocate(sizeof(Value), ALLOC_VALUE);;
     temp->type = type;
     return temp;
 }
@@ -24,16 +24,14 @@ Value* MakeS_IntegerValue(int n)
 
 Value* MakeS_FractionValue(int num, int denom)
 {
-    Value* temp = Allocate(sizeof(Value), ALLOC_VALUE);
-    temp->type = NUMBER;
+    Value* temp = NewValue(NUMBER);
     temp->content.number = NewS_FractionNumber(num, denom);
     return temp;
 }
 
 Value* MakeS_InexactValue(double n)
 {
-    Value* temp = Allocate(sizeof(Value), ALLOC_VALUE);
-    temp->type = NUMBER;
+    Value* temp = NewValue(NUMBER);
     temp->content.number = NewS_InexactNumber(n);
     return temp;
 }
@@ -97,7 +95,7 @@ void PrintS_Number(S_Number* num)
     }
 }
 
-Value* CopyS_Number(S_Number* num)
+Value* CopyS_NumberValue(S_Number* num)
 {    
     switch (num->type){
         case EXACT:
@@ -124,8 +122,7 @@ void FreeFraction(S_Fraction* f)
 // = Constructor
 Value* MakeS_BooleanValue(int true)
 {
-    Value* temp = Allocate(sizeof(Value), ALLOC_VALUE);
-    temp->type = BOOLEAN;
+    Value* temp = NewValue(BOOLEAN);
     temp->content.boolean = true ? TRUE : FALSE;
     return temp;
 }
@@ -140,8 +137,7 @@ void PrintS_Boolean(S_Boolean bool)
 // = Constructor
 Value* MakeS_VectorValue(int length)
 {
-    Value* temp = Allocate(sizeof(Value), ALLOC_VALUE);
-    temp->type = VECTOR;
+    Value* temp = NewValue(VECTOR);
     temp->content.vector = NewS_Vector(length);
 
     // Initialize values
@@ -177,8 +173,7 @@ void PrintS_Vector(S_Vector* v)
 // = Constructor
 Value* MakeS_CharacterValue(char character)
 {
-    Value* temp = Allocate(sizeof(Value), ALLOC_VALUE);
-    temp->type = CHARACTER;
+    Value* temp = NewValue(CHARACTER);
     temp->content.character = character;
     return temp;
 }
@@ -193,9 +188,8 @@ void PrintS_Character(char c)
 // = Constructor
 Value* MakeS_StringValue(String* string)
 {
-    Value* temp = Allocate(sizeof(Value), ALLOC_VALUE);
+    Value* temp = NewValue(STRING);
     int length = string->length;
-    temp->type = STRING;
     temp->content.string = NewS_String(length);
 
     for (int i = 0; i < length; i++)
@@ -234,11 +228,46 @@ void PrintS_String(S_String* s)
     Deallocate(temp, sizeof(char) * (s->vector->length + 1), ALLOC_VALUE);
 }
 
+// === Symbol
+// = Constructor
+Value* MakeS_SymbolValue(char* str)
+{
+    Value* val = NewValue(SYMBOL);
+    val->content.symbol = NewS_Symbol(str);
+    return val;
+}
+
+// = Auxiliary constructor
+S_Symbol* NewS_Symbol(char* str)
+{
+    S_Symbol* temp = Allocate(sizeof(S_Symbol), ALLOC_VALUE);
+    temp->str = NewStringFromLiteral(str);
+    return temp;
+}
+
+// = Other functions
+void PrintS_Symbol(S_Symbol* sym)
+{
+    printf("'");
+    PrintString(sym->str);
+}
+
+void FreeS_Symbol(S_Symbol* sym)
+{
+    FreeString(sym->str);
+    Deallocate(sym, sizeof(S_Symbol), ALLOC_VALUE);
+}
+
+Value* CopyS_SymbolValue(S_Symbol* sym)
+{
+    return MakeS_SymbolValue(sym->str->content);
+}
+
 // === Lambda
 // = Constructor
 Value* MakeS_LambdaValue(TokenTree* body, struct EnvHeader* env, int argCount)
 {
-    Value* temp = Allocate(sizeof(Value), ALLOC_VALUE);
+    Value* temp = NewValue(LAMBDA);
     temp->type = LAMBDA;
     temp->content.lambda = NewS_Lambda(body, env, argCount);
     return temp;
@@ -261,6 +290,13 @@ void PrintS_Lambda(S_Lambda* l)
 }
 
 // === Void
+// = Constructor
+Value* MakeS_Void()
+{
+    return NewValue(VOID);
+}
+
+// = Other functions
 void PrintVoid()
 {
     printf("#<void>");
@@ -291,12 +327,17 @@ void PrintValue(Value* val)
         case STRING:
             PrintS_String(val->content.string);
             break;
+
+        case SYMBOL:
+            PrintS_Symbol(val->content.symbol);
+            break;
+
+        case LAMBDA:
+            PrintS_Lambda(val->content.lambda);
+            break;
         
         case VOID:
             PrintVoid();
-            break;
-        case LAMBDA:
-            PrintS_Lambda(val->content.lambda);
             break;
         
         case -1:
@@ -320,7 +361,7 @@ Value* CopyValue(Value* val)
 
     switch (type){
         case NUMBER:
-            return CopyS_Number(val->content.number);
+            return CopyS_NumberValue(val->content.number);
             break;
         
         case CHARACTER:
@@ -338,12 +379,17 @@ Value* CopyValue(Value* val)
         case STRING:
             // return CopyS_String(val->content.string);
             break;
+
+        case SYMBOL:
+            return CopyS_SymbolValue(val->content.symbol);
+            break;
+            
+        case LAMBDA:
+            // return CopyS_Lambda(val->content.lambda);
+            break;
         
         case VOID:
             // return CopyVoid();
-            break;
-        case LAMBDA:
-            // return CopyS_Lambda(val->content.lambda);
             break;
         
         case -1:
@@ -366,6 +412,10 @@ void FreeValue(Value* val)
 
         case STRING:
             // FreeS_String(val->content.string);
+            break;
+
+        case SYMBOL:
+            FreeS_Symbol(val->content.symbol);
             break;
                 
         case CHARACTER:

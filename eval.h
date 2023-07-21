@@ -29,6 +29,8 @@ int IsQuoted(TokenTree* exp);
 int IsSum(TokenTree* exp);
 Value* PerformSum(TokenTree* operands, EnvHeader* env);
 
+Value* GetSymbol(TokenTree* exp);
+
 int IsPrintEnv(TokenTree* exp);
 int IsPrintMem(TokenTree* exp);
 int IsIdentifier(TokenTree* exp);   
