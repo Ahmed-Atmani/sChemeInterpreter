@@ -42,6 +42,8 @@ TokenTree* AppendValue(TokenTree* t, String* new);
 TokenTree* GetLastNode(TokenTree* t);
 
 void Foreach(TokenTree* t, void (*f)(String*));
+TokenTree* CopyTokenTree(TokenTree* tree);
+TokenTree* CopySubtree(TokenTree* tree);
 void PrintTree(TokenTree* t);
 void CopyCharacters(char* src, char* dest, int count);
 

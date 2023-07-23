@@ -9,6 +9,11 @@ String* NewString(int charCount)
     return str;
 }
 
+String* CopyString(String* str)
+{
+    return NewStringFromLiteral(str->content);
+}
+
 void NewStringContent(String* str, int charCount)
 {
     str->allocatedBytes = sizeof(char) * (charCount + 1);

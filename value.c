@@ -7,6 +7,35 @@ CONVENTION:
 
 */
 
+ArgList* MakeArgList(String* identifier)
+{
+    ArgList* temp = Allocate(sizeof(ArgList), ALLOC_VALUE);
+    temp->identifier = CopyString(identifier);
+    temp->next = NULL;
+
+    return temp;
+}
+
+// ArgList* GetLastArg(ArgList* lst)
+// {
+//     if (lst == NULL)
+//         printf("VALUE.C/GetLastArg: ArgList is NULL\n");
+
+//     while (lst->next != NULL)
+//         lst = lst->next;
+    
+//     return lst;
+// }
+
+ArgList* AddArgToList(ArgList* lst, String* identifier)
+{
+    if (lst == NULL)
+        return MakeArgList(identifier);
+    
+    lst->next = MakeArgList(identifier);
+    return lst->next;
+}
+
 Value* NewValue(ValueType type)
 {
     Value* temp = Allocate(sizeof(Value), ALLOC_VALUE);;
@@ -263,30 +292,38 @@ Value* CopyS_SymbolValue(S_Symbol* sym)
     return MakeS_SymbolValue(sym->str->content);
 }
 
-// === Lambda
+// === Lambda       
 // = Constructor
-Value* MakeS_LambdaValue(TokenTree* body, struct EnvHeader* env, int argCount)
+Value* MakeS_LambdaValue(TokenTree* body, struct EnvHeader* env, int argCount, ArgList* argList)
 {
     Value* temp = NewValue(LAMBDA);
     temp->type = LAMBDA;
-    temp->content.lambda = NewS_Lambda(body, env, argCount);
+    temp->content.lambda = NewS_Lambda(body, env, argCount, argList);
     return temp;
 }
 
 // = Auxiliary constructor
-S_Lambda* NewS_Lambda(TokenTree* body, struct EnvHeader* env, int argCount)
+S_Lambda* NewS_Lambda(TokenTree* body, struct EnvHeader* env, int argCount, ArgList* argList)
 {
     S_Lambda* temp = Allocate(sizeof(S_Lambda), ALLOC_VALUE);
     temp->body = body;
     temp->environment = env;
     temp->argCount = argCount;
+    temp->args = argList;
     return temp;
 }
 
 // = Other functions
+
+Value* CopyS_LambdaValue(S_Lambda* l)
+{
+    // ENV AND ARGS SHOULD ALSO BE COPIED (AS THEY MIGHT BE FREED LATER)
+    return MakeS_LambdaValue(CopyTokenTree(l->body), l->environment, l->argCount, l->args);
+}
+
 void PrintS_Lambda(S_Lambda* l)
 {
-    printf("<lambda: %d args>", l->argCount);
+    printf("<lambda: %i args>", l->argCount);
 }
 
 // === Void
@@ -385,7 +422,7 @@ Value* CopyValue(Value* val)
             break;
             
         case LAMBDA:
-            // return CopyS_Lambda(val->content.lambda);
+            return CopyS_LambdaValue(val->content.lambda);
             break;
         
         case VOID:

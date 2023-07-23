@@ -9,7 +9,6 @@ TokenTree* NewTokenTree(void)
     temp->prev = NULL;
     temp->parent = NULL;
     temp->value.subTree = NULL;
-    // temp->value.token = NewStringFromLiteral(EMPTY_TOKEN);
     temp->value.token = NULL;
     return temp;
 }
@@ -188,6 +187,33 @@ void Foreach(TokenTree* t, void (*f)(String*))
         f(t->value.token);
 
     Foreach(t->next, f);
+}
+
+TokenTree* CopyTokenTree(TokenTree* tree)
+{
+    if (IsNull(tree)) 
+        return NULL;
+
+    TokenTree* result = NewTokenTree();
+    TokenTree* curr = result;
+
+    while (!IsNull(tree)){
+        if (HasToken(tree))
+            SetToken(curr, CopyString(tree->value.token));
+        else if (HasSubTree(tree))
+            SetSubTree(curr, CopyTokenTree(tree->value.subTree));
+        
+        tree = tree->next;
+        if (!IsNull(tree))
+            curr = AddNewNext(curr);
+    }
+
+    return result;
+}
+
+TokenTree* CopySubtree(TokenTree* tree)
+{
+    return NULL;
 }
 
 void PrintTree(TokenTree* t)

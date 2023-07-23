@@ -10,38 +10,42 @@ This is a project that does not contribute to anything in any way that I decided
 - Use of increment syntax (var++, var += x, ...)
 - Macro expansion
 - Classes
+- Previous value assignment
+- SDL support
 
 ---
 
-## To do now
-1. Return singleton/new void type after definition/printmem/...
-1. Make symbol type
-1. Define should overwrite definition of existing identifier
-&nbsp;&nbsp;&nbsp;&nbsp;$\implies$ Only overwrite if identifier in same scope (not in enclosing scopes)
-1. Make it possible to define procedures:
-    1. Make CheckArgCount function that is called on each macro/proc application
-    1. Make Lambda type with constructor
-    1. Manually add lambda to env to test
-    1. Complete EvalDefinition
-1. Make Apply procedure that will:
-    1. Make a new environment
-    1. Make new variables (arguments) 
+## To do
+1. **Lambda's:**
+    1. Make FreeS_Lambda/CopyS_Lambda functions
+    1. Fix () for e.g. lambda's with no args
+
+1. **Definition of variables:**
+    1. Define should overwrite definition of existing identifier
+        => Only overwrite (set!) if identifier in same scope (not in enclosing scopes)
+    1. Syntactic sugar (e.g. (define (f x) (+ x 1)))
+
+1. **Apply:**
+    1. Make new variables (arguments) in scope of function 
     1. Call EvalSequence on the body
-1. Make 3-demensional array with predicate-argcount-function for macros/proc application
-1. Make primitive procedures
+
+1. Make 3-demensional array with (predicate, argcount, function) pair for macros/proc application
+    1. Move PrintValue/CopyValue/FreeValue into Value object itself (func pointer)
+
+1. **primitive procedures**
     1. Make S_Primitive Value type (that encapsulates function pointer) (?) 
     1. Add primitives to base EnvHeader
         => Primitives can be mutated just like regular variables
     1. Load put all primitives into env on startup
 
-## To do later
-- Add Error type with Error type handling
-- Make procedures to copy Environment in various ways (e.g. copy-while-adding-entry)
+1. **Rewrite Parser:**
+    1. Enable excape characters (e.g. #\a becomes token instead of (vector \a))
+    1. () should be (\*nothing\*) instead of a copy/reference to next
 
-- Make ValEnv type (Value-Environment-pair) for return type of Eval
-- Modify Eval to return Value-Environment pair
+1. Error Handling:
+    1. When error is encountered in any eval/apply proc => return a modified stack (with current scope pushed)
+    1. Make way of printing error
 
-- Modify Parser to be able to parse characters (e.g. #\a becomes token instead of (vector \a))
 
 ## Features and fixes
 ### Features to implement

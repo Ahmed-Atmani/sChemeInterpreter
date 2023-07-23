@@ -53,19 +53,24 @@ Value* Eval(TokenTree* exp, EnvHeader* env)
 
     // = Number
     if (IsIntegerLiteral(exp)){
-        printf("\n == NUMBER ==\n");
+        // printf("\n == NUMBER ==\n");
         return MakeS_IntegerValue(atoi(exp->value.token->content));    
     }
 
     // = Symbol
     if (IsQuoted(exp)){
-        printf("\n == QUOTED ==\n");
+        // printf("\n == QUOTED ==\n");
         return GetSymbol(exp->value.subTree); // Should return symbol value
+    }
+
+    if (IsLambda(exp)){
+        // printf("\n == LAMBDA ==\n");
+        return GetLambda(exp->value.subTree, env);
     }
 
     // = Definition
     if (IsDefine(exp)){
-        printf("\n == DEFINE ==\n");
+        // printf("\n == DEFINE ==\n");
         EvalDefinition(exp->value.subTree, env);
         return MakeS_Void();
     }
@@ -83,15 +88,21 @@ Value* Eval(TokenTree* exp, EnvHeader* env)
         return MakeS_Void();;
     }
 
+    // = DEBUG: Print Lambda Body
+    if (IsPrintLambdaBody(exp)){
+        // printf("\n == PRINT-BODY ==\n");
+        return EvalPrintLambdaBody(exp->value.subTree, env);
+    }
+
     // = TEMP: Sum
     if (IsSum(exp)){
-        printf("\n == SUM ==\n");
+        // printf("\n == SUM ==\n");
         return PerformSum(exp->value.subTree, env); // Give list of tokens starting from '+'
     }
 
     // = Variable
     if (IsIdentifier(exp)){
-        printf("\n == IDENTIFIER ==\n");
+        // printf("\n == IDENTIFIER ==\n");
         EnvEntry* temp = LookupValue(env, exp->value.token);
 
         result = (temp == NULL) ? NULL : CopyValue(temp->value);
@@ -107,11 +118,62 @@ Value* Eval(TokenTree* exp, EnvHeader* env)
 
     // = Exit
     if (IsExit(exp)){
-        printf("\n == EXIT ==\n");
+        // printf("\n == EXIT ==\n");
         EvalExit();
     }
 
     return NULL; // Should return error: unknown expression
+}
+
+int IsPrintLambdaBody(TokenTree* exp)
+{
+    return HasSubTree(exp) &&
+          !IsNull(exp->value.subTree) &&
+           HasToken(exp->value.subTree) &&
+           IsKeyword(exp->value.subTree->value.token, PRINT_BODY);
+}
+
+Value* EvalPrintLambdaBody(TokenTree* exp, EnvHeader* env)
+{
+    printf("BODY: ");
+    PrintTree(Eval(exp->next, env)->content.lambda->body);
+    printf("\n");
+    return MakeS_Void();
+}
+
+Value* GetLambda(TokenTree* exp, EnvHeader* env)
+{
+    // // = Identifier // This is for procedure definitions
+    // String* identifier = NewStringFromLiteral(exp->next->value.subTree->value.token->content);
+
+    // = ArgList and ArgCount
+    int argCount = 0;
+    TokenTree* args = exp->next->value.subTree;
+    ArgList* argLst = NULL;
+
+    ArgList* curr = argLst;
+
+    while (args != NULL){
+        argCount++;
+        curr = AddArgToList(curr, args->value.token);
+        args = args->next;
+    }
+    
+    // = Body
+    TokenTree* body = CopyTokenTree(exp->next->next->value.subTree);
+
+    // = Environment
+    EnvHeader* newEnv = MakeEnvironment(env);
+
+    return MakeS_LambdaValue(body, newEnv, argCount, argLst);
+}
+
+int IsLambda(TokenTree* exp)
+{
+    return HasSubTree(exp) &&
+          !IsNull(exp->value.subTree) &&
+           HasToken(exp->value.subTree) &&
+           IsKeyword(exp->value.subTree->value.token, FUNCTION);
 }
 
 Value* GetSymbol(TokenTree* exp)

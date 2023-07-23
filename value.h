@@ -6,8 +6,18 @@
 #include "string.h"
 #include "memproc.h"
 #include "token-tree.h"
-// #include "environment.h" // Circular inclue
+// #include "environment.h" // Circular include
 
+
+// === ArgList
+typedef struct ArgList{
+    String* identifier;
+    struct ArgList* next;
+} ArgList;
+
+ArgList* MakeArgList(String* identifier);
+// ArgList* GetLastArg(ArgList* lst);
+ArgList* AddArgToList(ArgList* lst, String* identifier);
 
 
 // === Types of content
@@ -53,6 +63,7 @@ struct EnvHeader;
 
 typedef struct S_Lambda{
     int argCount;
+    ArgList* args;
     TokenTree* body;
     struct EnvHeader* environment;
 } S_Lambda;
@@ -120,8 +131,8 @@ void PrintS_Symbol(S_Symbol* sym);
 void FreeS_Symbol(S_Symbol* sym);
 Value* CopyS_SymbolValue(S_Symbol* sym);    
 
-Value* MakeS_Lambda(TokenTree* body, struct EnvHeader* env, int argCount);
-S_Lambda* NewS_Lambda(TokenTree* body, struct EnvHeader* env, int argCount);
+Value* MakeS_LambdaValue(TokenTree* body, struct EnvHeader* env, int argCount, ArgList* argList);
+S_Lambda* NewS_Lambda(TokenTree* body, struct EnvHeader* env, int argCount, ArgList* argList);
 void PrintS_Lambda(S_Lambda* l);
 
 Value* MakeS_Void();

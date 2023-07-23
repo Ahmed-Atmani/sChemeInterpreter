@@ -8,6 +8,7 @@
 
 
 #define QUOTE "quote"
+#define FUNCTION "lambda"
 #define DEFINITION "define"
 #define ASSIGNMENT "set!"
 #define IF "if"
@@ -17,6 +18,7 @@
 
 #define PRINT_ENV "print-env"
 #define PRINT_MEM "print-mem"
+#define PRINT_BODY "print-body"
 
 
 Value* Eval(TokenTree* exp, EnvHeader* env);
@@ -24,12 +26,18 @@ Value* EvalSequence(TokenTree* tree, EnvHeader* env);
 
 int IsKeyword(String* src, char* keyWord);
 int IsIntegerLiteral(TokenTree* exp);
-int IsQuoted(TokenTree* exp);
 
 int IsSum(TokenTree* exp);
 Value* PerformSum(TokenTree* operands, EnvHeader* env);
 
+int IsLambda(TokenTree* exp);
+Value* GetLambda(TokenTree* exp, EnvHeader* env);
+
+int IsQuoted(TokenTree* exp);
 Value* GetSymbol(TokenTree* exp);
+
+int IsPrintLambdaBody(TokenTree* exp);
+Value* EvalPrintLambdaBody(TokenTree* exp, EnvHeader* env);
 
 int IsPrintEnv(TokenTree* exp);
 int IsPrintMem(TokenTree* exp);
