@@ -18,7 +18,6 @@ This is a project that does not contribute to anything in any way that I decided
 ## To do
 1. **Lambda's:**
     1. Make FreeS_Lambda/CopyS_Lambda functions
-    1. Fix () for e.g. lambda's with no args
 
 1. **Definition of variables:**
     1. Define should overwrite definition of existing identifier
@@ -39,6 +38,7 @@ This is a project that does not contribute to anything in any way that I decided
     1. Load put all primitives into env on startup
 
 1. **Rewrite Parser:**
+    1. Rethink how it could be implemented to easily allow modifications
     1. Enable excape characters (e.g. #\a becomes token instead of (vector \a))
     1. () should be (\*nothing\*) instead of a copy/reference to next
 
@@ -52,21 +52,18 @@ This is a project that does not contribute to anything in any way that I decided
     1. Add support for escape characters (e.g. \#a -> (#char a))
 
 1. **Rewrite input:**
-    1. Getchar implementation 
+    1. Getchar implementation
+    1. () should return (\*nothing\*) instead of error
 
-## Features and fixes
-### Features to implement
-- Find a way to make the pointer system better (e.g. keep track of all pointers with its size to make freeing easier (= without specifying size)) 
+1. **Values:**
+    1. Rethink fractions negative sign (fraction sign to nominator? or separate boolean?)
+
+1. **Other:**
+    1. Hide internal functions from header files (only leave interface)
+    1. Make better (advanced) makefile
 
 
-### Changes to add
-- Put fraction sign to nominator, and make procedure that "balances" the sign to the nominator (to call before returning new value)
-- Make better makefile
-- Check parenthesis balance and empty input before parsing (or while parsing pass error to main to skip eval) 
-- Make new Read implementation (with getchar (while char != '\n'))
-- Hide internal functions from header files (only leave interface)
-
-### Bugs to fix
+## Bugs to fix
 - Segfault after deleting characters (overwriting) on input
 - "()" and "'()" input gives segfault when freeing inputTree
     => "()" has parse tree "( ( ) )"
@@ -74,3 +71,9 @@ This is a project that does not contribute to anything in any way that I decided
 - "" input causes infinite loop
 - '(test) input results in segfault, while '(test ) doesn't
     => problem in parser.c
+
+
+## Things to think about
+1. How will the garbage collection be implemented? (will it even have GC? or C-like manual memory management))
+1. Poiners
+1. Macro's
