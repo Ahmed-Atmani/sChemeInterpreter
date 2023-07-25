@@ -42,28 +42,29 @@ This is a project that does not contribute to anything in any way that I decided
     1. Enable excape characters (e.g. #\a becomes token instead of (vector \a))
     1. () should be (\*nothing\*) instead of a copy/reference to next
 
-1. Error Handling:
+1. **Error Handling:**
     1. When error is encountered in any eval/apply proc => return a modified stack (with current scope pushed)
     1. Make way of printing error
+    2. Stack trace
 
+1. **Rewrite Parser:**
+    1. Check if parenthesis balanced, then parse if balanced
+    1. Add support for escape characters (e.g. \#a -> (#char a))
+
+1. **Rewrite input:**
+    1. Getchar implementation 
 
 ## Features and fixes
 ### Features to implement
-- SubEnvironments should be a copy of the previous one (mutations should not affect the )
-- Eval should return a value and a new (modified) environment !!!!
-- Eval environment (with copy function that copies it)
-- Apply
-- Copy function for values (be careful which values to copy!)
-- Stack trace for error info (return Error Value object with stack trace)
-    => Or just check on all procs if value is of type Error, then AppendTrace(errorValue, currentProcName)
 - Find a way to make the pointer system better (e.g. keep track of all pointers with its size to make freeing easier (= without specifying size)) 
+
 
 ### Changes to add
 - Put fraction sign to nominator, and make procedure that "balances" the sign to the nominator (to call before returning new value)
 - Make better makefile
-- When value is <#void>, nothing is printed
 - Check parenthesis balance and empty input before parsing (or while parsing pass error to main to skip eval) 
-- Make new Read implementation (with getchar (while char != '\n')) 
+- Make new Read implementation (with getchar (while char != '\n'))
+- Hide internal functions from header files (only leave interface)
 
 ### Bugs to fix
 - Segfault after deleting characters (overwriting) on input
