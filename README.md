@@ -57,6 +57,10 @@ This is a project that does not contribute to anything in any way that I decided
 
 1. **Values:**
     1. Rethink fractions negative sign (fraction sign to nominator? or separate boolean?)
+    1. Think about garbage collection:
+        - Each value should have a reference counter
+        - If the counter == 0, then the value can be freed
+        - This check should be done to the old value when reassigning a variable, and when printing it to the console 
 
 1. **Other:**
     1. Hide internal functions from header files (only leave interface)
