@@ -26,4 +26,8 @@ EnvEntry* LookupValue(EnvHeader* env, String* identifier);
 void PrintEnvironment(EnvHeader* env);
 void PrintEnvEntry(EnvEntry* entry);
 
+void FreeEnvEntry(EnvEntry* entry);
+void FreeEnvironment(EnvHeader* env);
+
+
 #endif

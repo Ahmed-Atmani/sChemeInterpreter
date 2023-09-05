@@ -1,6 +1,7 @@
 # sCheme
 
-sCheme is a Scheme interpreter written in C that is planned to support the usage of pointers, classes and other C-like features (e.g. ++, += etc.). \
+sCheme is a Scheme interpreter written in C that is planned to support the usage of pointers, classes and other (syntactic) C-like features (e.g. ++, += etc.).
+
 This is a project that does not contribute to anything in any way that I decided to make for no reason whatsoever. 
 
 ---
@@ -16,6 +17,9 @@ This is a project that does not contribute to anything in any way that I decided
 ---
 
 ## To do
+1. **Other:**
+    1. Make IsTaggedWith function
+
 1. **Lambda's:**
     1. Make FreeS_Lambda/CopyS_Lambda functions
 
@@ -57,10 +61,11 @@ This is a project that does not contribute to anything in any way that I decided
 
 1. **Values:**
     1. Rethink fractions negative sign (fraction sign to nominator? or separate boolean?)
-    1. Think about garbage collection:
-        - Each value should have a reference counter
-        - If the counter == 0, then the value can be freed
-        - This check should be done to the old value when reassigning a variable, and when printing it to the console 
+
+1. **SDL support**
+    1. Think about the interface to be used in scheme
+    1. Think about the way it'll be implemented (thread in C for loop and input loop?)
+    1. Think about whether it has to be imported first or not (to avoid conflicts)
 
 1. **Other:**
     1. Hide internal functions from header files (only leave interface)
@@ -78,6 +83,7 @@ This is a project that does not contribute to anything in any way that I decided
 
 
 ## Things to think about
-1. How will the garbage collection be implemented? (will it even have GC? or C-like manual memory management))
+1. Ability to interpret a file instead of REPL
+1. How will the garbage collection be implemented? (will it even have GC? or C-like manual memory management)
 1. Poiners
 1. Macro's

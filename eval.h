@@ -25,6 +25,7 @@ Value* Eval(TokenTree* exp, EnvHeader* env);
 Value* EvalSequence(TokenTree* tree, EnvHeader* env);
 
 int IsKeyword(String* src, char* keyWord);
+int IsTagged(TokenTree* exp, char* tag);
 int IsIntegerLiteral(TokenTree* exp);
 
 int IsSum(TokenTree* exp);

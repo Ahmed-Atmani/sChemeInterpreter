@@ -125,12 +125,30 @@ Value* Eval(TokenTree* exp, EnvHeader* env)
     return NULL; // Should return error: unknown expression
 }
 
-int IsPrintLambdaBody(TokenTree* exp)
+int IsKeyword(String* src, char* keyWord)
+{
+    int len1 = src->length, len2 = strlen(keyWord);
+    if (len1 != len2)
+        return 0;
+    
+    for (int i = 0; i < len1; i++)
+        if (src->content[i] != keyWord[i])
+            return 0;
+    
+    return 1;
+}
+
+int IsTagged(TokenTree* exp, char* tag)
 {
     return HasSubTree(exp) &&
           !IsNull(exp->value.subTree) &&
            HasToken(exp->value.subTree) &&
-           IsKeyword(exp->value.subTree->value.token, PRINT_BODY);
+           IsKeyword(exp->value.subTree->value.token, tag);
+}
+
+int IsPrintLambdaBody(TokenTree* exp)
+{
+    return IsTagged(exp, PRINT_BODY);
 }
 
 Value* EvalPrintLambdaBody(TokenTree* exp, EnvHeader* env)
@@ -170,10 +188,7 @@ Value* GetLambda(TokenTree* exp, EnvHeader* env)
 
 int IsLambda(TokenTree* exp)
 {
-    return HasSubTree(exp) &&
-          !IsNull(exp->value.subTree) &&
-           HasToken(exp->value.subTree) &&
-           IsKeyword(exp->value.subTree->value.token, FUNCTION);
+    return IsTagged(exp, FUNCTION);
 }
 
 Value* GetSymbol(TokenTree* exp)
@@ -183,26 +198,17 @@ Value* GetSymbol(TokenTree* exp)
 
 int IsPrintEnv(TokenTree* exp)
 {
-    return HasSubTree(exp) &&
-          !IsNull(exp->value.subTree) &&
-           HasToken(exp->value.subTree) &&
-           IsKeyword(exp->value.subTree->value.token, PRINT_ENV);
+    return IsTagged(exp, PRINT_ENV);
 }
 
 int IsPrintMem(TokenTree* exp)
 {
-    return HasSubTree(exp) &&
-          !IsNull(exp->value.subTree) &&
-           HasToken(exp->value.subTree) &&
-           IsKeyword(exp->value.subTree->value.token, PRINT_MEM);
+    return IsTagged(exp, PRINT_MEM);
 }
 
 int IsDefine(TokenTree* exp)
 {
-    return HasSubTree(exp) &&
-          !IsNull(exp->value.subTree) &&
-           HasToken(exp->value.subTree) &&
-           IsKeyword(exp->value.subTree->value.token, DEFINITION);
+    return IsTagged(exp, DEFINITION);
 }
 
 Value* EvalDefinition(TokenTree* exp, EnvHeader* env)
@@ -238,10 +244,7 @@ int IsIdentifier(TokenTree* exp)
 
 int IsSum(TokenTree* exp)
 {
-    return HasSubTree(exp) && 
-          !IsNull(exp->value.subTree) &&
-           HasToken(exp->value.subTree) &&
-           IsKeyword(exp->value.subTree->value.token, SUM_KEYWORD);
+    return IsTagged(exp, SUM_KEYWORD);
 }
 
 Value* PerformSum(TokenTree* exp, EnvHeader* env) // Exp == list starting with '+'
@@ -270,19 +273,6 @@ Value* PerformSum(TokenTree* exp, EnvHeader* env) // Exp == list starting with '
 
 }
 
-int IsKeyword(String* src, char* keyWord)
-{
-    int len1 = src->length, len2 = strlen(keyWord);
-    if (len1 != len2)
-        return 0;
-    
-    for (int i = 0; i < len1; i++)
-        if (src->content[i] != keyWord[i])
-            return 0;
-    
-    return 1;
-}
-
 int IsIntegerLiteral(TokenTree* exp)
 {
     if (!HasToken(exp))
@@ -306,18 +296,12 @@ int IsIntegerLiteral(TokenTree* exp)
 
 int IsQuoted(TokenTree* exp)
 {
-    return  HasSubTree(exp) &&
-           !IsNull(exp->value.subTree) &&
-            HasToken(exp->value.subTree) &&
-            IsKeyword(exp->value.subTree->value.token, QUOTE);
+    return IsTagged(exp, QUOTE);
 }
 
 int IsExit(TokenTree* exp)
 {
-    return HasSubTree(exp) &&
-          !IsNull(exp->value.subTree) &&
-           HasToken(exp->value.subTree) &&
-           IsKeyword(exp->value.subTree->value.token, EXIT_KEYWORD);
+    return IsTagged(exp, EXIT_KEYWORD);
 }
 
 Value* EvalConditional(EnvHeader* env){

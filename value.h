@@ -95,6 +95,8 @@ typedef struct Value{
 // === Prototypes
 
 Value* NewValue(ValueType type);
+void* AllocateValue(size_t size);
+void DeallocateValue(void* ptr, size_t size);
 
 Value* MakeS_IntegerValue(int n);
 Value* MakeS_FractionValue(int num, int denom);
@@ -134,6 +136,7 @@ Value* CopyS_SymbolValue(S_Symbol* sym);
 Value* MakeS_LambdaValue(TokenTree* body, struct EnvHeader* env, int argCount, ArgList* argList);
 S_Lambda* NewS_Lambda(TokenTree* body, struct EnvHeader* env, int argCount, ArgList* argList);
 void PrintS_Lambda(S_Lambda* l);
+void FreeS_Lambda(S_Lambda* l);
 
 Value* MakeS_Void();
 void PrintVoid();

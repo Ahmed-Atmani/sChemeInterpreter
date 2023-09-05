@@ -7,25 +7,35 @@ CONVENTION:
 
 */
 
+// === Value
+
+void* AllocateValue(size_t size)
+{
+    return Allocate(size, ALLOC_VALUE);
+}
+
+void DeallocateValue(void* ptr, size_t size)
+{
+    Deallocate(ptr, size, ALLOC_VALUE);
+}
+
+Value* NewValue(ValueType type)
+{
+    Value* temp = AllocateValue(sizeof(Value));
+    temp->type = type;
+    return temp;
+}
+
+// === ArgList
+
 ArgList* MakeArgList(String* identifier)
 {
-    ArgList* temp = Allocate(sizeof(ArgList), ALLOC_VALUE);
+    ArgList* temp = AllocateValue(sizeof(ArgList));
     temp->identifier = CopyString(identifier);
     temp->next = NULL;
 
     return temp;
 }
-
-// ArgList* GetLastArg(ArgList* lst)
-// {
-//     if (lst == NULL)
-//         printf("VALUE.C/GetLastArg: ArgList is NULL\n");
-
-//     while (lst->next != NULL)
-//         lst = lst->next;
-    
-//     return lst;
-// }
 
 ArgList* AddArgToList(ArgList* lst, String* identifier)
 {
@@ -36,11 +46,13 @@ ArgList* AddArgToList(ArgList* lst, String* identifier)
     return lst->next;
 }
 
-Value* NewValue(ValueType type)
+void FreeArgList(ArgList* lst)
 {
-    Value* temp = Allocate(sizeof(Value), ALLOC_VALUE);;
-    temp->type = type;
-    return temp;
+    if (lst == NULL)
+        return;
+    
+    FreeString(lst->identifier);
+    FreeArgList(lst->next);
 }
 
 // === Number
@@ -68,7 +80,7 @@ Value* MakeS_InexactValue(double n)
 // = Auxiliary constructors
 S_Number* NewS_InexactNumber(double n)
 {
-    S_Number* temp = Allocate(sizeof(S_Number), ALLOC_VALUE);
+    S_Number* temp = AllocateValue(sizeof(S_Number));
     temp->type = INEXACT;
     temp->content.inexact = n;
     return temp;
@@ -76,7 +88,7 @@ S_Number* NewS_InexactNumber(double n)
 
 S_Number* NewS_FractionNumber(int num, int denom) // Makes exact (fraction)
 {
-    S_Number* temp = Allocate(sizeof(S_Number), ALLOC_VALUE);
+    S_Number* temp = AllocateValue(sizeof(S_Number));
     temp->type = EXACT;
     temp->content.exact = NewS_Fraction(num, denom);
     return temp;
@@ -89,7 +101,7 @@ S_Number* NewS_IntegerNumber(int n) // Makes exact (integer)
 
 S_Fraction* NewS_Fraction(int num, int denom)
 {
-    S_Fraction* temp = Allocate(sizeof(S_Fraction), ALLOC_VALUE);
+    S_Fraction* temp = AllocateValue(sizeof(S_Fraction));
     temp->numerator = abs(num);
     temp->denominator = abs(denom);
     temp->sign = ((num < 0 && denom < 0) || (num >= 0 && denom >= 0)) ? 0 : 1;
@@ -119,7 +131,7 @@ void PrintS_Number(S_Number* num)
             break;
         
         case INEXACT:
-            printf("%d", num->content.inexact);
+            printf("%f", num->content.inexact);
             break;
     }
 }
@@ -139,12 +151,12 @@ void FreeS_Number(S_Number* num)
     if (num->type == EXACT)
         FreeFraction(num->content.exact);
 
-    Deallocate(num, sizeof(S_Number), ALLOC_VALUE);
+    DeallocateValue(num, sizeof(S_Number));
 }
 
 void FreeFraction(S_Fraction* f)
 {
-    Deallocate(f, sizeof(S_Fraction), ALLOC_VALUE);
+    DeallocateValue(f, sizeof(S_Fraction));
 }
 
 // === Boolean
@@ -179,9 +191,9 @@ Value* MakeS_VectorValue(int length)
 // = Auxiliary constructor
 S_Vector* NewS_Vector(int length)
 {
-    S_Vector* v = Allocate(sizeof(S_Vector), ALLOC_VALUE);
+    S_Vector* v = AllocateValue(sizeof(S_Vector));
     v->length = length;
-    v->contents = (void**)Allocate(sizeof(void*) * length, ALLOC_VALUE);
+    v->contents = (void**)AllocateValue(sizeof(void*) * length);
     return v;
 }
 
@@ -230,7 +242,7 @@ Value* MakeS_StringValue(String* string)
 // = Auxiliary constructor
 S_String* NewS_String(int length)
 {
-    S_String* str = Allocate(sizeof(S_String), ALLOC_VALUE);
+    S_String* str = AllocateValue(sizeof(S_String));
     str->vector = NewS_Vector(length);
     return str;
 }
@@ -239,7 +251,7 @@ S_String* NewS_String(int length)
 char* S_CharVectorToCharArray(S_Vector* v)
 {
     int len = v->length;
-    char* temp = Allocate(sizeof(char) * (len + 1), ALLOC_VALUE);
+    char* temp = AllocateValue(sizeof(char) * (len + 1));
         
     for (int i = 0; i < len; i++)
         temp[i] = ((Value*)(v->contents[i]))->content.character;
@@ -254,7 +266,7 @@ void PrintS_String(S_String* s)
 {
     char* temp = S_CharVectorToCharArray(s->vector);
     printf("\"%s\"", S_CharVectorToCharArray(s->vector));
-    Deallocate(temp, sizeof(char) * (s->vector->length + 1), ALLOC_VALUE);
+    DeallocateValue(temp, sizeof(char) * (s->vector->length + 1));
 }
 
 // === Symbol
@@ -269,7 +281,7 @@ Value* MakeS_SymbolValue(char* str)
 // = Auxiliary constructor
 S_Symbol* NewS_Symbol(char* str)
 {
-    S_Symbol* temp = Allocate(sizeof(S_Symbol), ALLOC_VALUE);
+    S_Symbol* temp = AllocateValue(sizeof(S_Symbol));
     temp->str = NewStringFromLiteral(str);
     return temp;
 }
@@ -284,7 +296,7 @@ void PrintS_Symbol(S_Symbol* sym)
 void FreeS_Symbol(S_Symbol* sym)
 {
     FreeString(sym->str);
-    Deallocate(sym, sizeof(S_Symbol), ALLOC_VALUE);
+    DeallocateValue(sym, sizeof(S_Symbol));
 }
 
 Value* CopyS_SymbolValue(S_Symbol* sym)
@@ -305,7 +317,7 @@ Value* MakeS_LambdaValue(TokenTree* body, struct EnvHeader* env, int argCount, A
 // = Auxiliary constructor
 S_Lambda* NewS_Lambda(TokenTree* body, struct EnvHeader* env, int argCount, ArgList* argList)
 {
-    S_Lambda* temp = Allocate(sizeof(S_Lambda), ALLOC_VALUE);
+    S_Lambda* temp = AllocateValue(sizeof(S_Lambda));
     temp->body = body;
     temp->environment = env;
     temp->argCount = argCount;
@@ -319,6 +331,21 @@ Value* CopyS_LambdaValue(S_Lambda* l)
 {
     // ENV AND ARGS SHOULD ALSO BE COPIED (AS THEY MIGHT BE FREED LATER)
     return MakeS_LambdaValue(CopyTokenTree(l->body), l->environment, l->argCount, l->args);
+}
+
+void FreeS_Lambda(S_Lambda* l)
+{
+    // Free body
+    RemoveTree(l->body);
+
+    // Free env
+    // FreeEnvironment(l->environment); // Not possible (circular include DAG if env.h is included)
+ 
+    // Free argList
+    FreeArgList(l->args);
+
+    // Free object
+    DeallocateValue(l, sizeof(S_Lambda));
 }
 
 void PrintS_Lambda(S_Lambda* l)
@@ -458,10 +485,11 @@ void FreeValue(Value* val)
         case CHARACTER:
         case BOOLEAN:
         case LAMBDA:
+            FreeS_Lambda(val->content.lambda);
         case VOID:
         case -1:
             printf("value.c:FreeValue: given value is NULL\n");
     }
 
-    Deallocate(val, sizeof(Value), ALLOC_VALUE);
+    DeallocateValue(val, sizeof(Value));
 }

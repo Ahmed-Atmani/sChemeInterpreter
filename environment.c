@@ -17,7 +17,7 @@ EnvEntry* MakeEnvEntry(String* identifier, Value* val)
 
 EnvHeader* MakeEnvironment(EnvHeader* enclosing)
 {
-    EnvHeader* temp = Allocate(sizeof(EnvEntry), ALLOC_ENV_ENTRY);
+    EnvHeader* temp = Allocate(sizeof(EnvEntry), ALLOC_ENV_HEADER);
     temp->varCount = 0;
     temp->procCount = 0;
     temp->nestingLevel = (enclosing == NULL) ? 0 : enclosing->nestingLevel + 1;
@@ -115,4 +115,32 @@ void PrintEnvironment(EnvHeader* env)
         }
         currentEnv = currentEnv->enclosingEnv;
     }
+}
+
+void FreeEnvEntry(EnvEntry* entry)
+{
+    // Free identifier
+    FreeString(entry->identifier);
+
+    // Free value
+    FreeValue(entry->value);
+
+    // Free object
+    Deallocate(entry, sizeof(EnvEntry), ALLOC_ENV_ENTRY);
+}
+
+// Frees current environment only, not recursively
+void FreeEnvironment(EnvHeader* env)
+{
+    EnvEntry* entry = env->first;
+
+    // Free all entries
+    while (entry != NULL){
+        FreeEnvEntry(entry);
+        entry = entry->next;
+    }
+
+    // Free header
+    Deallocate(env, sizeof(EnvHeader), ALLOC_ENV_HEADER);
+
 }
