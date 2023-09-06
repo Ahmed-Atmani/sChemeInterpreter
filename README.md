@@ -13,27 +13,22 @@ This is a project that does not contribute to anything in any way that I decided
 - Classes
 - Previous value assignment
 - SDL support
+- ...
 
 ---
 
 ## To do
-1. **Other:**
-    1. Make IsTaggedWith function
-
-1. **Lambda's:**
-    1. Make FreeS_Lambda/CopyS_Lambda functions
-
 1. **Definition of variables:**
     1. Define should overwrite definition of existing identifier
-        => Only overwrite (set!) if identifier in same scope (not in enclosing scopes)
-    1. Syntactic sugar (e.g. (define (f x) (+ x 1)))
+        => Only overwrite (set!) if identifier in same scope (not in enclosing scopes) (?)
+    1. Optionally rewrite parser so that lambda's with no args can be made.
+    1. Procedure definition
+    1. Procedure call (**check apply**)
+    1. Syntactic sugar for defining procedures (e.g. (define (f x) (+ x 1)))
 
 1. **Apply:**
     1. Make new variables (arguments) in scope of function 
     1. Call EvalSequence on the body
-
-1. Make 3-demensional array with (predicate, argcount, function) pair for macros/proc application
-    1. Move PrintValue/CopyValue/FreeValue into Value object itself (func pointer)
 
 1. **primitive procedures**
     1. Make S_Primitive Value type (that encapsulates function pointer) (?) 
@@ -41,6 +36,9 @@ This is a project that does not contribute to anything in any way that I decided
         => Primitives can be mutated just like regular variables
     1. Load put all primitives into env on startup
 
+1. **Lambda's:**
+    1. Check if FreeS_Lambda/CopyS_Lambda functions are correct (dealloc?)
+       
 1. **Rewrite Parser:**
     1. Rethink how it could be implemented to easily allow modifications
     1. Enable excape characters (e.g. #\a becomes token instead of (vector \a))
@@ -70,6 +68,8 @@ This is a project that does not contribute to anything in any way that I decided
 1. **Other:**
     1. Hide internal functions from header files (only leave interface)
     1. Make better (advanced) makefile
+    1. Make 3-demensional array with (predicate, argcount, function) pair for macros/proc application
+        1. Move PrintValue/CopyValue/FreeValue into Value object itself (func pointer)
 
 
 ## Bugs to fix
