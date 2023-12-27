@@ -1,10 +1,15 @@
 # sCheme
 
+![Alt text](./assets/sCheme-logo.png)
+
 sCheme is a Scheme interpreter written in C that is planned to support the usage of pointers, classes and other (syntactic) C-like features (e.g. ++, += etc.).
 
 This is a project that does not contribute to anything in any way that I decided to make for no reason whatsoever. 
 
 ---
+
+## Current state of the project
+The project is still in development. An eval function is already implemented, along with a hard-coded + primitive procedure. Some value types such as numbers and strings are also implemented, while other types are still in progress.
 
 ## Main ideas
 - Use of pointers
